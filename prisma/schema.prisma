@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator dbml {
+  provider = "prisma-dbml-generator"
+}
+
+model Event {
+  id             Int       @id @default(autoincrement())
+  name           String
+  startTime      String
+  endTime        String
+  isRepeating    Boolean
+  repeatDays     String
+  repeatInterval String
+  startDate      DateTime
+  endDate        DateTime
+  classroom      Classroom @relation(fields: [classroomId], references: [id])
+  classroomId    Int
+  course         Course    @relation(fields: [courseId], references: [id])
+  courseId       Int
+  teachers       Teacher?  @relation(fields: [teachersId], references: [id])
+  teachersId     Int?
+}
+
+model Classroom {
+  id        Int     @id @default(autoincrement())
+  name      String  @unique
+  building  String
+  capacity  String
+  equipment String
+  Event     Event[]
+}
+
+model Course {
+  id        Int              @id @default(autoincrement())
+  course_id Int              @unique
+  name      String
+  type      String
+  semester  String
+  events    Event[]
+  teachers  CourseTeachers[]
+}
+
+model Teacher {
+  id         Int              @id @default(autoincrement())
+  teacher_id Int              @unique
+  fullName   String
+  role       String
+  events     Event[]
+  courses    CourseTeachers[]
+}
+
+model CourseTeachers {
+  course    Course  @relation(fields: [courseId], references: [course_id])
+  courseId  Int
+  teacher   Teacher @relation(fields: [teacherId], references: [teacher_id])
+  teacherId Int
+
+  @@id([courseId, teacherId])
+}
+
+model Calendars {
+  id        Int    @id @default(autoincrement())
+  userId    String
+  name      String
+  courseIds String
+}
