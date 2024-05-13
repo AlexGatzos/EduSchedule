@@ -8,6 +8,7 @@
     "dev": "remix dev --manual",
     "start": "remix-serve ./build/index.js",
     "typecheck": "tsc",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx .",
     "test": "vitest",
     "db:studio": "npx prisma studio",
     "db:generate": "npx prisma generate",
