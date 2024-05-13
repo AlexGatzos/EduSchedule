@@ -41,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect("/");
   }
 
-  const classrooms = await prisma.classroom.findMany();
+  let classrooms = await prisma.classroom.findMany();
 
   let classroomBySemester = classrooms.reduce(
     (acc, classroom) => {

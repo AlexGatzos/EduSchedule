@@ -39,11 +39,11 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect("/");
   }
 
-  const events = await prisma.event.findMany();
+  let events = await prisma.event.findMany();
 
-  const courses = await prisma.course.findMany();
+  let courses = await prisma.course.findMany();
 
-  const classrooms = await prisma.classroom.findMany();
+  let classrooms = await prisma.classroom.findMany();
   console.log({ classrooms });
   let coursesBySemester = courses.reduce(
     (acc, course) => {

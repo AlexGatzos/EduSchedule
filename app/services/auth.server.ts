@@ -1,6 +1,7 @@
 // app/services/auth.server.ts
 import { Authenticator } from "remix-auth";
-import { OAuth2Profile, OAuth2Strategy } from "remix-auth-oauth2";
+import type { OAuth2Profile} from "remix-auth-oauth2";
+import { OAuth2Strategy } from "remix-auth-oauth2";
 import { sessionStorage } from "~/services/session.server";
 
 // Create an instance of the authenticator, pass a generic with what
@@ -52,7 +53,7 @@ class IHUOAuth2Strategy extends OAuth2Strategy<{}, OAuth2Profile, {}> {
       user: string;
     };
 }> {
-  const tokenResponse = await fetch(this.tokenURL, {
+  let tokenResponse = await fetch(this.tokenURL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -65,7 +66,7 @@ class IHUOAuth2Strategy extends OAuth2Strategy<{}, OAuth2Profile, {}> {
     })
   })
 
-  const result = await tokenResponse.json() as {
+  let result = await tokenResponse.json() as {
       "access_token": string,
       "user": string
   }
@@ -102,7 +103,7 @@ authenticator.use(
         console.log({accessToken, refreshToken, extraParams,  context, request})
         // here you can use the params above to get the user and return it
         // what you do inside this and how you find the user is up to you
-        const options = {
+        let options = {
           method: 'GET',
           headers: {'x-access-token': accessToken, 'Content-Type': 'application/json'},
         };

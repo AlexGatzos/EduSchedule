@@ -30,7 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return redirect("/");
   }
 
-  const uploadHandler = unstable_composeUploadHandlers(
+  let uploadHandler = unstable_composeUploadHandlers(
     // our custom upload handler
     async ({ name, contentType, data, filename }) => {
       if (name !== "file") {
@@ -39,9 +39,9 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       async function readCSVRows() {
         return new Promise<any[]>(async (resolve, reject) => {
-          const readableStream = new Readable(); // Create a readable stream
+          let readableStream = new Readable(); // Create a readable stream
 
-          const rows: any[] = [];
+          let rows: any[] = [];
           // Push the data into the readable stream
           readableStream
             .pipe(csv({ separator: ";" })) // Ορίζουμε τον διαχωριστή των πεδίων
@@ -52,16 +52,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
               resolve(rows);
             });
 
-          for await (const chunk of data) {
+          for await (let chunk of data) {
             readableStream.push(chunk);
           }
           readableStream.push(null); // Mark the end of the stream
         });
       }
 
-      const rows = await readCSVRows();
+      let rows = await readCSVRows();
 
-      for (const row of rows) {
+      for (let row of rows) {
         let parsedRow = coursesCSVRowSchema.parse(row);
         // Explicitly define the type of 'row' as 'any'
         // Εισάγουμε τα δεδομένα στον πίνακα Course

@@ -41,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect("/");
   }
 
-  const teachers = await prisma.teacher.findMany({
+  let teachers = await prisma.teacher.findMany({
     include: {
       courses: {
         select: {

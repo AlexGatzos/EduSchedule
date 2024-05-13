@@ -56,7 +56,7 @@ export async function action(args: ActionFunctionArgs) {
       throw new Error("Course not found");
     }
 
-    const isRepeating = data.repeat === "none" ? false : true;
+    let isRepeating = data.repeat === "none" ? false : true;
     await prisma.event.update({
       where: {
         id: params.id,

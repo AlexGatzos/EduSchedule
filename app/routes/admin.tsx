@@ -33,12 +33,12 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (!user.profile.isAdmin) {
     return redirect("/");
   }
-  const uploadHandler = unstable_composeUploadHandlers(
+  let uploadHandler = unstable_composeUploadHandlers(
     async ({ name, contentType, data, filename }) => {
       if (name !== "file") {
         return undefined;
       }
-      const readableStream = new Readable();
+      let readableStream = new Readable();
 
       readableStream
         .pipe(csv({ separator: ";" }))
@@ -56,7 +56,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         .on("end", () => {
           console.log("Data imported successfully");
         });
-      for await (const chunk of data) {
+      for await (let chunk of data) {
         readableStream.push(chunk);
       }
       readableStream.push(null);
