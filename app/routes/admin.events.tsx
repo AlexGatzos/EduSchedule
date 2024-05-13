@@ -24,7 +24,6 @@ import {
 import { useState } from "react";
 import { CreateEventModal } from "~/components/create-event-modal";
 import { EditEventModal } from "~/components/edit-event-modal";
-import { DeleteEventModal } from "~/components/delete-event-modal";
 import { authenticator } from "~/services/auth.server";
 import { ExampleTable } from "~/components/csv-example-table";
 
@@ -106,7 +105,6 @@ export default function Courses() {
   });
 
   let [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
-  let [isDeleteEventModalOpen, setIsDeleteEventModalOpen] = useState(false);
   let [eventid, setEventId] = useState<number | null>(null);
   let uploadCSVFetcher = useFetcher();
   let deleteAllCoursesFetcher = useFetcher();

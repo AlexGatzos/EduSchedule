@@ -1,8 +1,9 @@
 {
-  "include": ["remix.env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["env.d.ts", "**/*.ts", "**/*.tsx"],
   "compilerOptions": {
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "module": "ESNext",
+    "skipLibCheck": true,
     "isolatedModules": true,
     "esModuleInterop": true,
     "jsx": "react-jsx",
