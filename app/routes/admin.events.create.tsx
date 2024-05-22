@@ -1,12 +1,10 @@
-import { parseZonedDateTime } from "@internationalized/date";
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { json } from "@remix-run/node";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { prisma } from "~/database.server";
-import { authenticator } from "~/services/auth.server";
 
-let UpdateEventSchema = zfd
+let CreateEventSchema = zfd
   .formData({
     name: z.string().optional(),
     courseId: z.coerce.number(),
@@ -20,20 +18,8 @@ let UpdateEventSchema = zfd
       let [hours, minutes] = value.split(":").map(Number);
       return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
     }, "Invalid time format"),
-    startDate: z.string().transform((value) => {
-      if (typeof value !== "string") {
-        throw new Error("Invalid date format");
-      }
-
-      return parseZonedDateTime(value).toDate();
-    }),
-    endDate: z.string().transform((value) => {
-      if (typeof value !== "string") {
-        throw new Error("Invalid date format");
-      }
-
-      return parseZonedDateTime(value).toDate();
-    }),
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date(),
   })
   .superRefine((values, context) => {
     if (values.startTime > values.endTime) {
@@ -65,29 +51,10 @@ let UpdateEventSchema = zfd
 
 export type ActionData = typeof action;
 
-let ParamsSchema = z.object({
-  id: z.coerce.number(),
-});
-
 export async function action(args: ActionFunctionArgs) {
-  let user = await authenticator.isAuthenticated(args.request);
-
-  if (!user) {
-    return redirect("/auth/login");
-  }
-
-  if (
-    !(user.profile.eduPersonAffiliation === "staff") &&
-    !user.profile.isAdmin
-  ) {
-    return redirect("/");
-  }
-
   try {
     let formData = await args.request.formData();
-    let params = ParamsSchema.parse(args.params);
-
-    let data = UpdateEventSchema.parse(formData);
+    let data = CreateEventSchema.parse(formData);
 
     let course = await prisma.course.findUnique({
       where: {
@@ -99,11 +66,19 @@ export async function action(args: ActionFunctionArgs) {
       throw new Error("Course not found");
     }
 
+    let startTime = new Date(data.startDate);
+    let [startHours, startMinutes] = data.startTime.split(":").map(Number);
+    startTime.setHours(startHours);
+    startTime.setMinutes(startMinutes);
+
+    let endTime = new Date(data.startDate);
+    let [endHours, endMinutes] = data.endTime.split(":").map(Number);
+    endTime.setHours(endHours);
+    endTime.setMinutes(endMinutes);
+
     let isRepeating = data.repeat === "none" ? false : true;
-    await prisma.event.update({
-      where: {
-        id: params.id,
-      },
+
+    await prisma.event.create({
       data: {
         name: data.name || course.name,
         startTime: data.startTime,
@@ -130,9 +105,10 @@ export async function action(args: ActionFunctionArgs) {
       return json({
         errors: error.errors.reduce(
           (errors, error) => {
-            let path = error.path.join(".");
-            errors[path] = error.message;
-            return errors;
+            return {
+              ...errors,
+              [error.path.join(".")]: error.message,
+            };
           },
           {} as Record<string, string>,
         ),
@@ -146,5 +122,7 @@ export async function action(args: ActionFunctionArgs) {
     });
   }
 
-  return json({ success: true });
+  return json({
+    message: "Event created successfully.",
+  });
 }

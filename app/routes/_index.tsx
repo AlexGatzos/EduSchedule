@@ -1,9 +1,5 @@
-import { json, redirect } from "@remix-run/node";
-import type {
-  ActionFunctionArgs,
-  LoaderFunctionArgs,
-  MetaFunction,
-} from "@remix-run/node";
+import { json } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import {
   CheckIcon,
   ChevronLeftIcon,
@@ -13,7 +9,6 @@ import {
 } from "@heroicons/react/20/solid";
 import { NavLink, useLoaderData } from "@remix-run/react";
 import { prisma } from "~/database.server";
-import { zfd } from "zod-form-data";
 
 import type { DateDuration } from "@internationalized/date";
 import {
@@ -46,7 +41,6 @@ import {
   SelectValue,
 } from "react-aria-components";
 import { useState, Fragment } from "react";
-import { z } from "zod";
 import type { DateValue } from "react-aria-components";
 import { CreateEventModal } from "~/components/create-event-modal";
 import { EditEventModal } from "~/components/edit-event-modal";
@@ -64,69 +58,6 @@ export const meta: MetaFunction = () => {
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
-}
-
-let CreateEventSchema = zfd.formData({
-  name: z.string().optional(),
-  courseId: z.coerce.number(),
-  classroomId: z.coerce.number(),
-  repeat: z.enum(["none", "daily", "weekly", "monthly", "yearly"]),
-  startTime: z.string(),
-  endTime: z.string(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
-});
-
-export async function action(args: ActionFunctionArgs) {
-  let formData = await args.request.formData();
-  let data = CreateEventSchema.parse(formData);
-
-  let course = await prisma.course.findUnique({
-    where: {
-      id: data.courseId,
-    },
-  });
-
-  if (!course) {
-    throw new Error("Course not found");
-  }
-
-  let startTime = new Date(data.startDate);
-  let [startHours, startMinutes] = data.startTime.split(":").map(Number);
-  startTime.setHours(startHours);
-  startTime.setMinutes(startMinutes);
-
-  let endTime = new Date(data.startDate);
-  let [endHours, endMinutes] = data.endTime.split(":").map(Number);
-  endTime.setHours(endHours);
-  endTime.setMinutes(endMinutes);
-
-  let isRepeating = data.repeat === "none" ? false : true;
-
-  await prisma.event.create({
-    data: {
-      name: data.name || course.name,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      isRepeating: isRepeating,
-      repeatDays: data.repeat,
-      repeatInterval: data.repeat,
-      startDate: data.startDate,
-      endDate: data.endDate,
-      course: {
-        connect: {
-          id: course.id,
-        },
-      },
-      classroom: {
-        connect: {
-          id: data.classroomId,
-        },
-      },
-    },
-  });
-
-  return redirect("/?index");
 }
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -679,14 +610,14 @@ export default function Index() {
                             <Button
                               slot={null}
                               onPress={() => setEventId(event.id)}
-                              className="@container group flex w-full items-center justify-between gap-1 rounded px-1 transition-colors hover:bg-indigo-500/15"
+                              className="group flex w-full items-center justify-between gap-1 rounded px-1 transition-colors @container hover:bg-indigo-500/15"
                             >
                               <p className="truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">
                                 {event.name}
                               </p>
                               <time
                                 dateTime={event.startDate}
-                                className="@[100px]:flex hidden flex-none flex-nowrap items-center text-xs text-gray-500 group-hover:text-indigo-600"
+                                className="hidden flex-none flex-nowrap items-center text-xs text-gray-500 group-hover:text-indigo-600 @[100px]:flex"
                               >
                                 <span>
                                   {event.startTime
@@ -694,7 +625,7 @@ export default function Index() {
                                     .slice(0, 2)
                                     .join(":")}
                                 </span>
-                                <span className="@[140px]:block hidden">
+                                <span className="hidden @[140px]:block">
                                   {" - "}
                                   {event.endTime
                                     .split(":")
