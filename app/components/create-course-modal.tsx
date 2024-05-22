@@ -3,7 +3,8 @@ import {
   CheckIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useFetcher } from "@remix-run/react";
+import { useEffect, useState } from "react";
 import type { ModalOverlayProps } from "react-aria-components";
 import {
   ModalOverlay,
@@ -16,7 +17,10 @@ import {
   ListBox,
   ListBoxItem,
   Input,
+  FieldError,
+  TextField,
 } from "react-aria-components";
+import type { ActionData } from "~/routes/admin.teachers.create";
 
 export function CreateCourseModal(
   props: ModalOverlayProps &
@@ -26,6 +30,15 @@ export function CreateCourseModal(
 ) {
   let { teachers, isOpen, onOpenChange } = props;
   let [selectedTeachers, setSelectedTeachers] = useState(new Set());
+  let { state, data, submit } = useFetcher<ActionData>();
+
+  let errors = data && "errors" in data ? data.errors : undefined;
+
+  useEffect(() => {
+    if (data && !errors && state !== "idle") {
+      onOpenChange?.(false);
+    }
+  }, [data, errors, onOpenChange, state]);
   return (
     <ModalOverlay
       isOpen={isOpen}
@@ -46,52 +59,78 @@ export function CreateCourseModal(
               <Form
                 action="/admin/courses/create"
                 method="post"
+                validationErrors={errors}
                 className="flex h-full flex-col gap-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submit(e.currentTarget);
+                }}
               >
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Course ID</span>
-                  <Input
-                    name="course_id"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="course_id"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Course ID</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="type"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Type</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
 
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Type</span>
-                  <Input
-                    name="type"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="name"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Name</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="semester"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Semester</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="semester"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Teachers</span>
+                  </Label>
+                  <input
+                    className="hidden"
+                    name="teacherIds"
+                    value={[...selectedTeachers.values()].join(",")}
                   />
-                </Label>
-
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Name</span>
-                  <Input
-                    name="name"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
-
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Semester</span>
-                  <Input
-                    name="semester"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
-
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Teachers</span>
-                </Label>
-                <input
-                  className="hidden"
-                  name="teacherIds"
-                  value={[...selectedTeachers.values()].join(",")}
-                />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
                 <ListBox
                   onSelectionChange={(selected) => {
                     setSelectedTeachers(new Set(selected));
@@ -122,7 +161,6 @@ export function CreateCourseModal(
                     </ListBoxItem>
                   )}
                 </ListBox>
-
                 <Button
                   className="flex items-center gap-2 justify-self-end rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   type="submit"

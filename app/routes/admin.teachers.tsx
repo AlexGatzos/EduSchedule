@@ -29,6 +29,7 @@ import { CreateTeacherModal } from "~/components/create-teachers-modal";
 import { EditTeacherModal } from "~/components/edit-teachers-modal";
 import { authenticator } from "~/services/auth.server";
 import { ExampleTable } from "~/components/csv-example-table";
+import { UserIcon } from "@heroicons/react/24/solid";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
@@ -224,50 +225,53 @@ export default function Teacher() {
             </Button>
           </div>
         </div>
-        <ListBox
-          className="rounded border shadow-2xl shadow-indigo-400"
-          items={allTeachers}
-        >
+        <ListBox className="flex flex-col gap-4" items={allTeachers}>
           {(teacherByName) => (
             <Section
               className="flex flex-col divide-y border"
               key={teacherByName.id}
             >
-              <Header className="px-2 py-4 text-lg font-semibold">
-                {teacherByName.fullName}
+              <Header className="flex items-center gap-2 bg-indigo-50 px-2 py-3 text-lg font-semibold text-indigo-700">
+                <UserIcon className="w-5" /> {teacherByName.fullName}
+                {teacherByName.teachers.map((teacher) => (
+                  <div
+                    key={teacherByName.id}
+                    className="flex items-center gap-2 "
+                  >
+                    <Button
+                      className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                      onPress={() => setTeacherId(teacher.id)}
+                    >
+                      <PencilSquareIcon className="h-4 w-4 text-gray-400" />
+                    </Button>
+
+                    <Button
+                      className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                      onPress={() => {
+                        deleteTeacherFetcher.submit(null, {
+                          method: "DELETE",
+                          action: `/admin/teachers/${teacher.id}/delete`,
+                        });
+                      }}
+                    >
+                      <TrashIcon className="h-4 w-4 text-gray-400" />
+                    </Button>
+                  </div>
+                ))}
               </Header>
               <Collection items={teacherByName.teachers}>
                 {(teacher) => (
                   <ListBoxItem
-                    className="flex items-center justify-between gap-2 px-2 py-3"
+                    className="flex items-center justify-between"
                     key={teacher.id}
                   >
-                    <div>
+                    <div className="flex w-full flex-col divide-y">
                       {teacher.courses.map((course) => (
-                        <div key={course.course.name}>
+                        <div className="px-8 py-2" key={course.course.name}>
                           <span>{course.course.name}</span>
                           {/* Render other course details as needed */}
                         </div>
                       ))}
-                    </div>
-                    <span className="text-xs text-gray-800">
-                      {teacher.role}
-                    </span>
-
-                    <div className="flex items-center gap-2">
-                      <Button onPress={() => setTeacherId(teacher.id)}>
-                        <PencilSquareIcon className="h-4 w-4 text-gray-400" />
-                      </Button>
-                      <Button
-                        onPress={() => {
-                          deleteTeacherFetcher.submit(null, {
-                            method: "DELETE",
-                            action: `/admin/teachers/${teacher.id}/delete`,
-                          });
-                        }}
-                      >
-                        <TrashIcon className="h-4 w-4 text-gray-400" />
-                      </Button>
                     </div>
                   </ListBoxItem>
                 )}
@@ -277,10 +281,12 @@ export default function Teacher() {
         </ListBox>
       </div>
 
-      <CreateTeacherModal
-        isOpen={isNewTeacherModalOpen}
-        onOpenChange={setIsNewTeacherModalOpen}
-      />
+      {isNewTeacherModalOpen && (
+        <CreateTeacherModal
+          isOpen={isNewTeacherModalOpen}
+          onOpenChange={setIsNewTeacherModalOpen}
+        />
+      )}
 
       {selectedTeacher && (
         <EditTeacherModal

@@ -216,16 +216,13 @@ export default function Classroom() {
             </Button>
           </div>
         </div>
-        <ListBox
-          className="rounded border shadow-2xl shadow-indigo-400"
-          items={allClassrooms}
-        >
+        <ListBox className="flex flex-col gap-4" items={allClassrooms}>
           {(buldingWithClassrooms) => (
             <Section
               className="flex flex-col divide-y border"
               key={buldingWithClassrooms.id}
             >
-              <Header className="px-2 py-4 text-lg font-semibold">
+              <Header className="bg-indigo-50 px-2 py-4 text-lg font-semibold text-indigo-500">
                 Κτήριο {buldingWithClassrooms.building}
               </Header>
               <Collection items={buldingWithClassrooms.classrooms}>

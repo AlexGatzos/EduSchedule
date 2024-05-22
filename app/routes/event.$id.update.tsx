@@ -13,20 +13,38 @@ let UpdateEventSchema = zfd.formData({
   repeat: z.enum(["none", "daily", "weekly", "monthly", "yearly"]),
   startTime: z.string(),
   endTime: z.string(),
-  startDate: z.string().transform((value) => {
-    if (typeof value !== "string") {
-      throw new Error("Invalid date format");
-    }
+  startDate: z
+    .string()
+    .transform((value) => {
+      if (typeof value !== "string") {
+        throw new Error("Invalid date format");
+      }
 
-    return parseZonedDateTime(value).toDate();
-  }),
-  endDate: z.string().transform((value) => {
-    if (typeof value !== "string") {
-      throw new Error("Invalid date format");
-    }
+      return parseZonedDateTime(value).toDate();
+    })
+    .refine((value) => {
+      if (value < new Date()) {
+        return false;
+      }
 
-    return parseZonedDateTime(value).toDate();
-  }),
+      return true;
+    }, "Start date must be in the future"),
+  endDate: z
+    .string()
+    .transform((value) => {
+      if (typeof value !== "string") {
+        throw new Error("Invalid date format");
+      }
+
+      return parseZonedDateTime(value).toDate();
+    })
+    .refine((value) => {
+      if (value < new Date()) {
+        return false;
+      }
+
+      return true;
+    }),
 });
 
 let ParamsSchema = z.object({

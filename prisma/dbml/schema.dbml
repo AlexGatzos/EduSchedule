@@ -1,0 +1,77 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Event {
+  id Int [pk, increment]
+  name String [not null]
+  startTime String [not null]
+  endTime String [not null]
+  isRepeating Boolean [not null]
+  repeatDays String [not null]
+  repeatInterval String [not null]
+  startDate DateTime [not null]
+  endDate DateTime [not null]
+  classroom Classroom [not null]
+  classroomId Int [not null]
+  course Course [not null]
+  courseId Int [not null]
+  teachers Teacher
+  teachersId Int
+}
+
+Table Classroom {
+  id Int [pk, increment]
+  name String [unique, not null]
+  building String [not null]
+  capacity String [not null]
+  equipment String [not null]
+  Event Event [not null]
+}
+
+Table Course {
+  id Int [pk, increment]
+  course_id Int [unique, not null]
+  name String [not null]
+  type String [not null]
+  semester String [not null]
+  events Event [not null]
+  teachers CourseTeachers [not null]
+}
+
+Table Teacher {
+  id Int [pk, increment]
+  teacher_id Int [unique, not null]
+  fullName String [not null]
+  role String [not null]
+  events Event [not null]
+  courses CourseTeachers [not null]
+}
+
+Table CourseTeachers {
+  course Course [not null]
+  courseId Int [not null]
+  teacher Teacher [not null]
+  teacherId Int [not null]
+
+  indexes {
+    (courseId, teacherId) [pk]
+  }
+}
+
+Table Calendars {
+  id Int [pk, increment]
+  userId String [not null]
+  name String [not null]
+  courseIds String [not null]
+}
+
+Ref: Event.classroomId > Classroom.id
+
+Ref: Event.courseId > Course.id
+
+Ref: Event.teachersId > Teacher.id
+
+Ref: CourseTeachers.courseId > Course.course_id
+
+Ref: CourseTeachers.teacherId > Teacher.teacher_id

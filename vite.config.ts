@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import { installGlobals } from "@remix-run/node";
@@ -7,12 +8,16 @@ installGlobals();
 
 export default defineConfig({
   plugins: [
-    remix({
-      ignoredRouteFiles: ["**/.*"],
-    }),
+    !process.env.VITEST &&
+      remix({
+        ignoredRouteFiles: ["**/.*"],
+      }),
     tsconfigPaths(),
   ],
   server: {
     port: 3000,
+  },
+  test: {
+    includeSource: ["app/**/*.ts"],
   },
 });

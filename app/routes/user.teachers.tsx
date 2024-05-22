@@ -12,7 +12,6 @@ import {
   Header,
 } from "react-aria-components";
 import { useState } from "react";
-import { CreateTeacherModal } from "~/components/create-teachers-modal";
 import { ViewTeacherModal } from "~/components/view-teachers-modal";
 import { authenticator } from "~/services/auth.server";
 import { UserIcon } from "@heroicons/react/24/solid";
@@ -62,7 +61,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Teacher() {
   let { allTeachers, teachers } = useLoaderData<typeof loader>();
 
-  let [isNewTeacherModalOpen, setIsNewTeacherModalOpen] = useState(false);
   let [teacherId, setTeacherId] = useState<number | null>(null);
 
   let selectedTeacher = teacherId
@@ -107,11 +105,6 @@ export default function Teacher() {
           )}
         </ListBox>
       </div>
-
-      <CreateTeacherModal
-        isOpen={isNewTeacherModalOpen}
-        onOpenChange={setIsNewTeacherModalOpen}
-      />
 
       {selectedTeacher && (
         <ViewTeacherModal

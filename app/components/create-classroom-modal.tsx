@@ -2,6 +2,8 @@ import {
   PlusIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/20/solid";
+import { useFetcher } from "@remix-run/react";
+import { useEffect } from "react";
 import type { ModalOverlayProps } from "react-aria-components";
 import {
   ModalOverlay,
@@ -12,12 +14,23 @@ import {
   Label,
   Button,
   Input,
+  TextField,
+  FieldError,
 } from "react-aria-components";
+import type { ActionData } from "~/routes/admin.classrooms.create";
 
 export function CreateClassroomModal(
   props: ModalOverlayProps & React.RefAttributes<HTMLDivElement> & {},
 ) {
   let { isOpen, onOpenChange } = props;
+  let { state, data, submit } = useFetcher<ActionData>();
+  let errors = data && "errors" in data ? data.errors : undefined;
+
+  useEffect(() => {
+    if (data && !errors && state !== "idle") {
+      onOpenChange?.(false);
+    }
+  }, [data, errors, onOpenChange, state]);
 
   return (
     <ModalOverlay
@@ -39,70 +52,64 @@ export function CreateClassroomModal(
               <Form
                 action="/admin/classrooms/create"
                 method="post"
+                validationErrors={errors}
                 className="flex h-full flex-col gap-3"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submit(e.currentTarget);
+                }}
               >
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Building</span>
-                  <Input
-                    name="building"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="name"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Name</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
 
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Capacity</span>
-                  <Input
-                    name="capacity"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="building"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Building</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
 
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Name</span>
-                  <Input
-                    name="name"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="capacity"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Capacity</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
 
-                <Label className="flex flex-col gap-1">
-                  <span className="text-sm">Equipment</span>
-                  <Input
-                    name="equipment"
-                    type="text"
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                  />
-                </Label>
-
-                {/* <Select name="teachers" className="flex flex-col gap-1">
-                  <Label className="text-sm">Teachers</Label>
-                  <Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                    <SelectValue className="block truncate" />
-                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                      <ChevronUpDownIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Button>
-                  <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                    <ListBox
-                      className="w-full focus:outline-none"
-                      items={teachers}
-                      selectionMode="multiple"
-                    >
-                      {(teacher) => (
-                        <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
-                          {teacher.name}
-                          <CheckIcon className="hidden w-4 text-emerald-500 group-aria-selected:block" />
-                        </ListBoxItem>
-                      )}
-                    </ListBox>
-                  </Popover>
-                </Select> */}
+                <TextField
+                  className="flex flex-col gap-1"
+                  name="equipment"
+                  type="text"
+                  isRequired
+                >
+                  <Label>
+                    <span className="text-sm">Equipment</span>
+                  </Label>
+                  <Input className="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                  <FieldError className="text-xs text-rose-500" />
+                </TextField>
 
                 <Button
                   className="flex items-center gap-2 justify-self-end rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"

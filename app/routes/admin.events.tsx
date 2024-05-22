@@ -1,5 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import {
+  BookOpenIcon,
+  BuildingOffice2Icon,
+  CalendarDaysIcon,
   CloudArrowUpIcon,
   InformationCircleIcon,
   PencilSquareIcon,
@@ -20,12 +23,14 @@ import {
   DialogTrigger,
   Modal,
   ModalOverlay,
+  Header,
 } from "react-aria-components";
 import { useState } from "react";
 import { CreateEventModal } from "~/components/create-event-modal";
 import { EditEventModal } from "~/components/edit-event-modal";
 import { authenticator } from "~/services/auth.server";
 import { ExampleTable } from "~/components/csv-example-table";
+import { ClockIcon } from "@heroicons/react/24/solid";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
@@ -276,38 +281,81 @@ export default function Courses() {
             </Button>
           </div>
         </div>
-        <ListBox
-          className="rounded border shadow-2xl shadow-indigo-400"
-          items={events}
-        >
+        <ListBox className="flex flex-col gap-4" items={events}>
           {(events) => (
             <ListBoxItem
-              className="flex items-center justify-between gap-2 px-2 py-3"
+              className="flex flex-col divide-y overflow-hidden rounded border"
               key={events.id}
             >
-              <span className="flex-1 truncate text-sm font-medium text-gray-900">
-                {events.name}
-              </span>
-              <span className="flex-shrink-0 text-xs text-gray-800">
-                {events.startDate} {events.endDate}
-              </span>
-              <span className="flex-shrink-0 text-xs text-gray-800">
-                {events.startTime} {events.endTime}
-              </span>
-              <div className="flex items-center gap-2">
-                <Button onPress={() => setEventId(events.id)}>
-                  <PencilSquareIcon className="h-4 w-4 text-gray-400" />
-                </Button>
-                <Button
-                  onPress={() => {
-                    deleteCourseFetcher.submit(null, {
-                      method: "DELETE",
-                      action: `/event/${events.id}/delete`,
-                    });
-                  }}
-                >
-                  <TrashIcon className="h-4 w-4 text-gray-400" />
-                </Button>
+              <Header className="flex items-center justify-between gap-2 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-500">
+                <div className="flex items-center gap-2">
+                  <CalendarDaysIcon className="w-5" />
+                  {events.name}
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                    onPress={() => setEventId(events.id)}
+                  >
+                    <PencilSquareIcon className="h-4 w-4 text-gray-400" />
+                  </Button>
+                  <Button
+                    className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                    onPress={() => {
+                      deleteCourseFetcher.submit(null, {
+                        method: "DELETE",
+                        action: `/event/${events.id}/delete`,
+                      });
+                    }}
+                  >
+                    <TrashIcon className="h-4 w-4 text-gray-400 " />
+                  </Button>
+                </div>
+              </Header>
+              <div className="flex flex-col gap-2 px-3">
+                <span className="flex items-center gap-2">
+                  <BookOpenIcon className="w-3" />
+                  {
+                    courses.find((course) => course.id === events.courseId)
+                      ?.name
+                  }
+                </span>
+                <span className="flex items-center gap-2">
+                  <BuildingOffice2Icon className="w-3" />
+                  Αίθουσα{" "}
+                  {
+                    classrooms.find(
+                      (classroom) => classroom.id === events.classroomId,
+                    )?.name
+                  }
+                </span>
+                <span className="flex items-center gap-2">
+                  <ClockIcon className="w-3" />
+                  {new Date(events.startDate).toLocaleDateString("el-GR", {
+                    weekday: "long",
+                  })}{" "}
+                  {events.startTime.substring(0, 5)} -{" "}
+                  {events.endTime.substring(0, 5)}
+                </span>
+                {events.repeatInterval === "daily" ? (
+                  <span className="flex items-center gap-2">
+                    <CalendarDaysIcon className="w-3" />
+                    Κάθε μέρα από {events.startDate.split("T")[0]} μέχρι{" "}
+                    {events.endDate.split("T")[0]}
+                  </span>
+                ) : events.repeatInterval === "weekly" ? (
+                  <span className="flex items-center gap-2">
+                    <CalendarDaysIcon className="w-3" />
+                    Κάθε εβδομάδα από {
+                      events.startDate.split("T")[0]
+                    } μέχρι {events.endDate.split("T")[0]}
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <CalendarDaysIcon className="w-3" />
+                    Μονο για την ημερομηνία {events.startDate.split("T")[0]}
+                  </span>
+                )}
               </div>
             </ListBoxItem>
           )}

@@ -223,16 +223,13 @@ export default function Courses() {
             </Button>
           </div>
         </div>
-        <ListBox
-          className="rounded border shadow-2xl shadow-indigo-400"
-          items={allCourses}
-        >
+        <ListBox className="flex flex-col gap-4" items={allCourses}>
           {(semesterWithCourses) => (
             <Section
               className="flex flex-col divide-y border"
               key={semesterWithCourses.id}
             >
-              <Header className="px-2 py-4 text-lg font-semibold">
+              <Header className="bg-indigo-50 px-2 py-4 text-lg font-semibold text-indigo-500">
                 Εξάμηνο {semesterWithCourses.semester}
               </Header>
               <Collection items={semesterWithCourses.courses}>

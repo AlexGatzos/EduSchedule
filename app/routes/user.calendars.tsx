@@ -80,13 +80,13 @@ export default function Calendars() {
               className="flex flex-col divide-y overflow-hidden rounded border"
               key={calendar.id}
             >
-              <Header className="flex items-center justify-between gap-2 bg-indigo-50 px-2 py-4 text-lg font-semibold text-indigo-500">
+              <Header className="flex items-center justify-between gap-2 bg-indigo-50 px-2 py-2 text-lg font-semibold text-indigo-500">
                 <div className="flex items-center gap-2">
                   <CalendarDaysIcon className="w-5" />
                   {calendar.name}
                 </div>
                 <Button
-                  className="flex items-center gap-2 rounded-md bg-white/50 px-3 py-2 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                  className="flex items-center gap-2 rounded-md bg-white/50 px-2 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
                   onPress={() => {
                     deleteCourseFetcher.submit(null, {
                       method: "DELETE",
@@ -110,7 +110,7 @@ export default function Calendars() {
                     key={course.id}
                   >
                     <div className="flex flex-1 flex-col overflow-hidden">
-                      <span className="w-full flex-1 truncate text-xl font-medium text-gray-900">
+                      <span className="w-full flex-1 truncate text-sm font-medium text-gray-900">
                         {course.name}
                       </span>
                       {/* <span className="flex items-center gap-2 text-sm">
