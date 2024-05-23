@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { prisma } from "~/database.server";
+import { checkForValidRoomTime } from "~/services/validation";
 
 let CreateEventSchema = zfd
   .formData({
@@ -78,6 +79,19 @@ export async function action(args: ActionFunctionArgs) {
 
     let isRepeating = data.repeat === "none" ? false : true;
 
+    console.log({
+      data,
+    });
+
+    await checkForValidRoomTime({
+      endDate: data.endDate,
+      endTime: data.endTime,
+      repeatInterval: data.repeat,
+      room: data.classroomId,
+      startDate: data.startDate,
+      startTime: data.startTime,
+    });
+
     await prisma.event.create({
       data: {
         name: data.name || course.name,
@@ -115,9 +129,13 @@ export async function action(args: ActionFunctionArgs) {
       });
     }
 
+    let errorMessage =
+      error instanceof Error
+        ? error.message
+        : `An error occurred while creating the event. ${error}`;
     return json({
       errors: {
-        form: `${error}`,
+        form: errorMessage,
       },
     });
   }
