@@ -102,6 +102,7 @@ async function checkForValidRoomTime(
   });
 
   updateDays({
+    name: "New Event",
     startDate,
     endDate,
     startTime,
