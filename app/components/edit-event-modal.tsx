@@ -90,8 +90,6 @@ export function EditEventModal(
     }
   }, [data, errors, onOpenChange, state]);
 
-  console.log({ selectedEvent });
-
   return (
     <ModalOverlay
       isOpen={isOpen}

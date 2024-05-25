@@ -53,7 +53,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       let rows = await readCSVRows();
 
       for (let row of rows) {
-        console.log(row);
         let teacher_id = parseInt(row.teacher_id, 10);
         await prisma.teacher.upsert({
           where: {

@@ -48,7 +48,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let courses = await prisma.course.findMany();
 
   let classrooms = await prisma.classroom.findMany();
-  console.log({ classrooms });
+
   let coursesBySemester = courses.reduce(
     (acc, course) => {
       if (course.semester in acc) {
@@ -104,10 +104,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export default function Courses() {
   let { allCourses, events, courses, classrooms, repeat } =
     useLoaderData<typeof loader>();
-
-  console.log({
-    classrooms,
-  });
 
   let [isNewEventModalOpen, setIsNewEventModalOpen] = useState(false);
   let [eventid, setEventId] = useState<number | null>(null);

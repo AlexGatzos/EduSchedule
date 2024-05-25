@@ -43,7 +43,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       readableStream
         .pipe(csv({ separator: ";" }))
         .on("data", async (row: any) => {
-          console.log(row);
           await prisma.course.create({
             data: {
               type: row.type,

@@ -54,7 +54,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
       let rows = await readCSVRows();
 
       for (let row of rows) {
-        console.log(row);
         let isRepeating = row.isRepeating === "True";
         let course_id = parseInt(row.course_id, 10);
         let startDate = new Date(row.startDate);

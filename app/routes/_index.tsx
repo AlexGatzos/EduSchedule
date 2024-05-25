@@ -575,7 +575,6 @@ export default function Index() {
                   return a.startTime.localeCompare(b.startTime);
                 });
 
-              console.log({ dayEvents, events });
               let isDateForCurrentMonth = isSameMonth(
                 date,
                 today(getLocalTimeZone()),

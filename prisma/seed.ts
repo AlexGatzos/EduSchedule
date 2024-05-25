@@ -29,7 +29,6 @@ async function seedEvents() {
   let rows = await readCSVRows(join(BASE_DIR, "events.csv"));
 
   for (let row of rows) {
-    console.log(row);
     let isRepeating = row.isRepeating === "True";
     let course_id = parseInt(row.course_id, 10);
     let startDate = new Date(row.startDate);
@@ -63,7 +62,6 @@ async function seedClassrooms() {
   let rows = await readCSVRows(join(BASE_DIR, "classrooms.csv"));
 
   for (let row of rows) {
-    console.log(row);
     await prisma.classroom.upsert({
       where: {
         name: row.name,
@@ -88,7 +86,6 @@ async function seedTeachers() {
   let rows = await readCSVRows(join(BASE_DIR, "teachers.csv"));
 
   for (let row of rows) {
-    console.log(row);
     let teacher_id = parseInt(row.teacher_id, 10);
     await prisma.teacher.upsert({
       where: {

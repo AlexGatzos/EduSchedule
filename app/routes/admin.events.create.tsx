@@ -79,10 +79,6 @@ export async function action(args: ActionFunctionArgs) {
 
     let isRepeating = data.repeat === "none" ? false : true;
 
-    console.log({
-      data,
-    });
-
     await checkForValidRoomTime({
       endDate: data.endDate,
       endTime: data.endTime,
