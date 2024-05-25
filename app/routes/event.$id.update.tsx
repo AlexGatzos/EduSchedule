@@ -5,6 +5,7 @@ import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { prisma } from "~/database.server";
 import { authenticator } from "~/services/auth.server";
+import { checkForValidRoomTime } from "~/services/validation";
 
 let UpdateEventSchema = zfd
   .formData({
@@ -100,6 +101,17 @@ export async function action(args: ActionFunctionArgs) {
     }
 
     let isRepeating = data.repeat === "none" ? false : true;
+
+    await checkForValidRoomTime({
+      id: params.id,
+      endDate: data.endDate,
+      endTime: data.endTime,
+      repeatInterval: data.repeat,
+      room: data.classroomId,
+      startDate: data.startDate,
+      startTime: data.startTime,
+    });
+
     await prisma.event.update({
       where: {
         id: params.id,
