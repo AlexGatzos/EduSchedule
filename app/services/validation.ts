@@ -110,9 +110,17 @@ async function checkForValidRoomTime(
     repeatInterval,
   });
 
+  function filterCurrentEvent(event: Event) {
+    if ("id" in event) {
+      return event.id !== params.id;
+    }
+
+    return true;
+  }
+
   daysTable.forEach((day) => {
     // Check each event with all other events on the same day for overlapping times
-    day.events.forEach((event, index, events) => {
+    day.events.filter(filterCurrentEvent).forEach((event, index, events) => {
       let overlappingEvents = events.filter((e, i) => {
         if (i === index) {
           return false;
@@ -126,8 +134,11 @@ async function checkForValidRoomTime(
 
       if (overlappingEvents.length > 0) {
         let message = overlappingEvents
+          .filter(filterCurrentEvent)
           .map((e) => `${e.name} στις ${e.startTime} - ${e.endTime}`)
           .join(", ");
+
+        console.log(overlappingEvents.length, message);
 
         throw new Error(
           `Η αίθουσα δεν είναι διαθέσιμη κατά τη συγκεκριμένη χρονική περίοδο. Είναι κρατημενη για το event: ${message}`,
