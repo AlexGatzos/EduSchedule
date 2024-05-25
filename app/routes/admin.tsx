@@ -112,7 +112,7 @@ export default function Admin() {
               <Bars3Icon className="h-5 w-5 text-gray-900" aria-hidden="true" />
             </button>
             <NavLink to="/" className="flex-shrink-0">
-              <Logo width={50} />
+              <Logo />
             </NavLink>
           </div>
           <nav className="hidden md:flex md:gap-x-11 md:text-sm md:font-semibold md:leading-6 md:text-gray-700">
@@ -260,7 +260,7 @@ export default function Admin() {
               </button>
               <div className="-ml-0.5">
                 <NavLink to="/" className="flex-shrink-0">
-                  <Logo width={50} />
+                  <Logo />
                 </NavLink>
               </div>
             </div>

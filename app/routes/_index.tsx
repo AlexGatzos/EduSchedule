@@ -175,7 +175,11 @@ export default function Index() {
         visibleDuration={visibleDuration}
         onChange={(date) => {
           setSelectedDate(date);
-          if (user && user.profile.eduPersonAffiliation === "staff") {
+          if (
+            user &&
+            (user.profile.eduPersonAffiliation === "staff" ||
+              user.profile.isAdmin)
+          ) {
             setIsEventModalOpen(true);
           }
         }}
@@ -183,7 +187,7 @@ export default function Index() {
         <header className="flex items-center justify-between border-b border-white px-6 py-4 lg:flex-none">
           <div className="flex items-center gap-2">
             <NavLink to="/" className="flex-shrink-0">
-              <Logo width={50} />
+              <Logo />
             </NavLink>
             <Heading className="text-base font-semibold leading-6 text-gray-900" />
           </div>
@@ -301,7 +305,9 @@ export default function Index() {
             </div>
             <div className="h-6 w-px bg-gray-300" />
 
-            {user && user.profile.eduPersonAffiliation === "staff" ? (
+            {user &&
+            (user.profile.eduPersonAffiliation === "staff" ||
+              user.profile.isAdmin) ? (
               <Button
                 slot={null}
                 onPress={() => setIsEventModalOpen(true)}
@@ -744,7 +750,11 @@ export default function Index() {
         </CalendarGrid>
       </Calendar>
 
-      {Boolean(user?.profile.eduPersonAffiliation === "staff") && (
+      {Boolean(
+        user &&
+          (user.profile.eduPersonAffiliation === "staff" ||
+            user.profile.isAdmin),
+      ) && (
         <CreateEventModal
           isOpen={isEventModalOpen}
           onOpenChange={setIsEventModalOpen}
@@ -759,7 +769,9 @@ export default function Index() {
       {selectedEvent && (
         <EditEventModal
           isAuthenticated={Boolean(
-            user?.profile.eduPersonAffiliation === "staff",
+            user &&
+              (user.profile.eduPersonAffiliation === "staff" ||
+                user.profile.isAdmin),
           )}
           repeat={repeat}
           courses={courses}
