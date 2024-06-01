@@ -6,6 +6,7 @@ import {
   ArrowRightStartOnRectangleIcon,
   PencilSquareIcon,
   TrashIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import {
   BookOpenIcon,
@@ -97,15 +98,16 @@ export function EditEventModal(
       isDismissable
       className="fixed inset-0 bg-zinc-100 bg-opacity-30 backdrop-blur"
     >
-      <Modal className="fixed bottom-0 right-0 top-0 w-[430px] border-l border-gray-400 bg-zinc-50 shadow-lg outline-none">
-        <Dialog className="flex h-full w-full flex-col gap-4 p-4 focus:outline-none">
+      <Modal className="fixed bottom-0 right-0 top-0 max-w-[430px] border-l border-gray-400 bg-zinc-50 shadow-lg outline-none">
+        <Dialog className="relative flex h-full w-full flex-col gap-4 p-4 pt-2 focus:outline-none">
           {({ close }) => (
             <>
               <Heading
                 slot="title"
-                className="flex items-center gap-2 text-lg font-semibold"
+                className="flex w-full items-center gap-2 text-lg font-semibold"
               >
-                <PencilSquareIcon className="w-5" /> {selectedEvent?.name}
+                <PencilSquareIcon className="w-5" />
+                <span className="flex-1">{selectedEvent?.name}</span>
               </Heading>
               {isAuthenticated && (
                 <>
@@ -458,58 +460,70 @@ export function EditEventModal(
                 </>
               )}
               {!isAuthenticated && (
-                <div className="flex flex-1 flex-col gap-2">
-                  <span className="flex items-center gap-2">
-                    <BookOpenIcon className="w-3" />
-                    {
-                      courses.find(
-                        (course) => course.id === selectedEvent.courseId,
-                      )?.name
-                    }
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <BuildingOffice2Icon className="w-3" />
-                    Αίθουσα{" "}
-                    {
-                      classrooms.find(
-                        (classroom) =>
-                          classroom.id === selectedEvent.classroomId,
-                      )?.name
-                    }
-                  </span>
-                  <span className="flex items-center gap-2">
-                    <ClockIcon className="w-3" />
-                    {new Date(selectedEvent.startDate).toLocaleDateString(
-                      "el-GR",
+                <>
+                  <div className="flex flex-1 flex-col gap-2">
+                    <span className="flex items-center gap-2">
+                      <BookOpenIcon className="w-3" />
                       {
-                        weekday: "long",
-                      },
-                    )}{" "}
-                    {selectedEvent.startTime.substring(0, 5)} -{" "}
-                    {selectedEvent.endTime.substring(0, 5)}
-                  </span>
-                  {selectedEvent.repeatInterval === "daily" ? (
-                    <span className="flex items-center gap-2">
-                      <CalendarDaysIcon className="w-3" />
-                      Κάθε μέρα από {selectedEvent.startDate.split("T")[0]}{" "}
-                      μέχρι {selectedEvent.endDate.split("T")[0]}
+                        courses.find(
+                          (course) => course.id === selectedEvent.courseId,
+                        )?.name
+                      }
                     </span>
-                  ) : selectedEvent.repeatInterval === "weekly" ? (
                     <span className="flex items-center gap-2">
-                      <CalendarDaysIcon className="w-3" />
-                      Κάθε εβδομάδα από {
-                        selectedEvent.startDate.split("T")[0]
-                      }{" "}
-                      μέχρι {selectedEvent.endDate.split("T")[0]}
+                      <BuildingOffice2Icon className="w-3" />
+                      Αίθουσα{" "}
+                      {
+                        classrooms.find(
+                          (classroom) =>
+                            classroom.id === selectedEvent.classroomId,
+                        )?.name
+                      }
                     </span>
-                  ) : (
                     <span className="flex items-center gap-2">
-                      <CalendarDaysIcon className="w-3" />
-                      Μονο για την ημερομηνία{" "}
-                      {selectedEvent.startDate.split("T")[0]}
+                      <ClockIcon className="w-3" />
+                      {new Date(selectedEvent.startDate).toLocaleDateString(
+                        "el-GR",
+                        {
+                          weekday: "long",
+                        },
+                      )}{" "}
+                      {selectedEvent.startTime.substring(0, 5)} -{" "}
+                      {selectedEvent.endTime.substring(0, 5)}
                     </span>
-                  )}
-                </div>
+                    {selectedEvent.repeatInterval === "daily" ? (
+                      <span className="flex items-center gap-2">
+                        <CalendarDaysIcon className="w-3" />
+                        Κάθε μέρα από {
+                          selectedEvent.startDate.split("T")[0]
+                        }{" "}
+                        μέχρι {selectedEvent.endDate.split("T")[0]}
+                      </span>
+                    ) : selectedEvent.repeatInterval === "weekly" ? (
+                      <span className="flex items-center gap-2">
+                        <CalendarDaysIcon className="w-3" />
+                        Κάθε εβδομάδα από{" "}
+                        {selectedEvent.startDate.split("T")[0]} μέχρι{" "}
+                        {selectedEvent.endDate.split("T")[0]}
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-2">
+                        <CalendarDaysIcon className="w-3" />
+                        Μονο για την ημερομηνία{" "}
+                        {selectedEvent.startDate.split("T")[0]}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex w-full items-center justify-end sm:hidden">
+                    <Button
+                      slot={null}
+                      onPress={close}
+                      className="flex w-full items-center gap-2 rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                    >
+                      <XMarkIcon className="w-5" /> Close
+                    </Button>
+                  </div>
+                </>
               )}
             </>
           )}

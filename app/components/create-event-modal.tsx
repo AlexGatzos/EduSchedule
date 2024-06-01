@@ -81,9 +81,13 @@ export function CreateEventModal(
       isOpen={isOpen}
       onOpenChange={onOpenChange}
       isDismissable
-      className="fixed inset-0 bg-zinc-100 bg-opacity-30 backdrop-blur"
+      className={({ isEntering, isExiting }) => `
+      fixed inset-0 bg-zinc-100 bg-opacity-30 backdrop-blur
+      ${isEntering ? "duration-300 ease-out animate-in fade-in" : ""}
+      ${isExiting ? "duration-200 ease-in animate-out fade-out" : ""}
+    `}
     >
-      <Modal className="fixed bottom-0 right-0 top-0 w-96 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none">
+      <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none md:w-96">
         <Dialog className="flex h-full w-full flex-col gap-4 p-4 focus:outline-none">
           <Heading
             slot="title"
@@ -121,7 +125,7 @@ export function CreateEventModal(
                 </span>
               </Button>
               <FieldError className="text-xs text-rose-500" />
-              <Popover className="z-10 mt-1 max-h-40 min-w-[20ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Popover className="z-10 mt-1 max-h-40 w-40 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm md:min-w-[30ch]">
                 <ListBox className="rounded border" items={allCourses}>
                   {(semesterWithCourses) => (
                     <Section
@@ -165,7 +169,7 @@ export function CreateEventModal(
                 </span>
               </Button>
               <FieldError className="text-xs text-rose-500" />
-              <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Popover className="z-10 mt-1 max-h-60 w-16 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm md:min-w-[13ch]">
                 <ListBox
                   className="w-full focus:outline-none"
                   items={classrooms}
@@ -218,7 +222,7 @@ export function CreateEventModal(
                 </span>
               </Button>
               <FieldError className="text-xs text-rose-500" />
-              <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Popover className="z-10 mt-1 max-h-60 w-24 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm md:min-w-[13ch]">
                 <ListBox className="w-full focus:outline-none" items={repeat}>
                   {(item) => (
                     <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
@@ -241,7 +245,7 @@ export function CreateEventModal(
                   {(segment) => (
                     <DateSegment
                       segment={segment}
-                      className="rounded-sm px-0.5 tabular-nums caret-transparent outline-none placeholder-shown:italic focus:bg-violet-700 focus:text-white"
+                      className=" rounded-sm px-0.5 tabular-nums caret-transparent outline-none placeholder-shown:italic focus:bg-violet-700 focus:text-white"
                     />
                   )}
                 </DateInput>
@@ -255,7 +259,7 @@ export function CreateEventModal(
                 </Button>
               </Group>
               <FieldError className="text-xs text-rose-500" />
-              <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Popover className="z-10 mt-1 max-h-60 min-w-[81%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm md:min-w-[40ch]">
                 <Dialog className="p-6 text-gray-600">
                   <Calendar>
                     <header className="flex w-full items-center gap-1 px-1 pb-4 font-serif">
@@ -316,7 +320,7 @@ export function CreateEventModal(
                 </Button>
               </Group>
               <FieldError className="text-xs text-rose-500" />
-              <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <Popover className="z-10 mt-1 max-h-60 min-w-[81%] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm md:min-w-[40ch]">
                 <Dialog className="p-6 text-gray-600">
                   <Calendar>
                     <header className="flex w-full items-center gap-1 px-1 pb-4 font-serif">

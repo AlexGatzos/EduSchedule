@@ -43,7 +43,7 @@ export default function Admin() {
     <>
       <header className="flex border-b border-gray-900/10 py-4">
         <div className="flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-1 items-center gap-x-6">
+          <div className="flex flex-1 items-center gap-x-3">
             <button
               type="button"
               className="-m-3 p-3 md:hidden"
@@ -101,7 +101,7 @@ export default function Admin() {
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">Open user menu</span>
                   <img
-                    className="h-12 w-12 rounded-full"
+                    className="h-10 w-10 rounded-full"
                     src={
                       user?.profile.profilePhoto ||
                       "https://images.unsplash.com/photo-1544890225-2f3faec4cd60?q=80&w=3850&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"

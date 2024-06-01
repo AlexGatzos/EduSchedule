@@ -67,9 +67,10 @@ export default function Calendars() {
               slot={null}
               type="button"
               onPress={() => setIsNewCalendarModalOpen(true)}
-              className="flex items-center gap-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex items-center gap-2 rounded-md bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:px-3 sm:py-2"
             >
-              <PlusIcon className="w-4" /> New Calendar
+              <PlusIcon className="w-4" />{" "}
+              <span className="hidden sm:block">New Calendar</span>
             </Button>
           </div>
         </div>

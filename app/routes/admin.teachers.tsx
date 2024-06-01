@@ -100,17 +100,19 @@ export default function Teacher() {
               slot={null}
               onPress={() => setIsNewTeacherModalOpen(true)}
               type="button"
-              className="flex items-center gap-2 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              className="flex items-center gap-2 rounded-md bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:px-3 sm:py-2"
             >
-              <PlusIcon className="w-4" /> Add Teachers
+              <PlusIcon className="w-4" />{" "}
+              <span className="hidden sm:block">Add Teachers</span>
             </Button>
 
             <DialogTrigger>
               <Button
                 slot={null}
-                className="flex items-center gap-2 rounded-md bg-zinc-500 px-3 py-2 text-sm font-semibold text-white shadow-sm aria-disabled:opacity-25 hover:bg-zinc-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                className="flex items-center gap-2 rounded-md bg-zinc-500 px-2 py-1 text-sm font-semibold text-white shadow-sm aria-disabled:opacity-25 hover:bg-zinc-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600 sm:px-3 sm:py-2"
               >
-                <CloudArrowUpIcon className="w-4" /> Upload CSV
+                <CloudArrowUpIcon className="w-4" />{" "}
+                <span className="hidden sm:block">Upload CSV</span>
               </Button>
               <ModalOverlay
                 isDismissable
@@ -219,9 +221,10 @@ export default function Teacher() {
                   action: "/admin/teachers/delete",
                 });
               }}
-              className="flex items-center gap-2 rounded-md bg-rose-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
+              className="flex items-center gap-2 rounded-md bg-rose-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600 sm:px-3 sm:py-2"
             >
-              <TrashIcon className="w-4" /> Delete All
+              <TrashIcon className="w-4" />{" "}
+              <span className="hidden sm:block">Delete All</span>
             </Button>
           </div>
         </div>
