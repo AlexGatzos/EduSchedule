@@ -20,10 +20,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
     return redirect("/auth/login");
   }
 
-  if (!user.profile.isAdmin) {
-    return redirect("/");
-  }
-
   let courses = await prisma.course.findMany();
 
   let coursesBySemester = courses.reduce(

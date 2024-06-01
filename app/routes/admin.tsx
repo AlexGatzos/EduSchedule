@@ -298,7 +298,7 @@ export default function Admin() {
         </Dialog>
       </header>
 
-      <div className=" max-w-full px-16 pt-28">
+      <div className=" max-w-full p-4 sm:p-16">
         <Outlet />
       </div>
     </>

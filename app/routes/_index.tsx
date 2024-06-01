@@ -458,26 +458,6 @@ export default function Index() {
                             <div
                               className={classNames(
                                 active ? "bg-gray-100" : "",
-                                "block border-b px-4 py-2 text-sm text-gray-700  md:hidden",
-                              )}
-                            >
-                              <Button
-                                slot={null}
-                                className="flex h-full w-full items-center justify-start gap-2"
-                                onPress={() => {
-                                  setFocusedDate(today(getLocalTimeZone()));
-                                }}
-                              >
-                                Today
-                              </Button>
-                            </div>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <div
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
                                 "block px-4 py-2 text-sm text-gray-700",
                               )}
                             >
@@ -843,7 +823,10 @@ export default function Index() {
                       {dayEvents
                         .slice(0, duration === "month" ? 2 : dayEvents.length)
                         .map((event) => (
-                          <li key={event.id} className="hidden w-full sm:flex">
+                          <li
+                            key={event.id}
+                            className={`${duration === "day" ? "flex" : "hidden sm:flex"} w-full`}
+                          >
                             <Button
                               slot={null}
                               onPress={() => setEventId(event.id)}
@@ -977,7 +960,7 @@ export default function Index() {
                         )}
                       </div>
                       <div className="sm:hidden">
-                        {dayEvents.length > 0 && duration === "month" && (
+                        {dayEvents.length > 0 && duration !== "day" && (
                           <div className="text-sm text-gray-500">
                             {dayEvents.length > 0 && (
                               <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
@@ -1001,13 +984,16 @@ export default function Index() {
         </CalendarGrid>
       </Calendar>
 
-      {todaysEvents.length > 0 && (
-        <div className="flex-1 overflow-y-auto px-4 py-10 sm:px-6 lg:hidden">
-          <ol className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5">
+      {duration !== "day" && (
+        <div className="flex-1 overflow-y-auto px-4 py-10 sm:hidden sm:px-6">
+          <ListBox className="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5">
             {todaysEvents.map((event) => (
-              <li
+              <ListBoxItem
+                onAction={() => {
+                  setEventId(event.id);
+                }}
                 key={event.id}
-                className="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50"
+                className="group flex p-4 pr-6 focus-within:bg-indigo-50 hover:bg-indigo-50 focus:outline-none"
               >
                 <div className="flex-auto">
                   <p className="font-semibold text-gray-900">{event.name}</p>
@@ -1023,21 +1009,9 @@ export default function Index() {
                     {event.endTime.split(":").slice(0, 2).join(":")}
                   </time>
                 </div>
-                <Button
-                  slot={null}
-                  onPress={() => setEventId(event.id)}
-                  className="ml-6 flex-none self-center rounded-md bg-white px-3 py-2 font-semibold text-gray-900 opacity-100 shadow-sm ring-1 ring-inset ring-gray-300 hover:ring-gray-400"
-                >
-                  {user &&
-                  (user.profile.isAdmin ||
-                    user?.profile.eduPersonAffiliation === "staff")
-                    ? "Edit"
-                    : "View"}
-                  <span className="sr-only">, {event.name}</span>
-                </Button>
-              </li>
+              </ListBoxItem>
             ))}
-          </ol>
+          </ListBox>
         </div>
       )}
 
