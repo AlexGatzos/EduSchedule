@@ -47,6 +47,7 @@ import {
   Popover,
   Select,
   SelectValue,
+  Toolbar,
 } from "react-aria-components";
 import { useState, Fragment } from "react";
 import type { DateValue } from "react-aria-components";
@@ -287,7 +288,7 @@ export default function Index() {
         <header className="flex border-b border-gray-900/10 py-4">
           <div className="flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex flex-1 items-center gap-x-3">
-              <button
+              {/* <button
                 type="button"
                 className="-m-3 p-3 md:hidden"
                 onClick={() => setMobileMenuOpen(true)}
@@ -297,12 +298,12 @@ export default function Index() {
                   className="h-5 w-5 text-gray-900"
                   aria-hidden="true"
                 />
-              </button>
+              </button> */}
               <NavLink to="/" className="flex-shrink-0">
                 <Logo />
               </NavLink>
 
-              <Heading className="text-base font-semibold leading-6 text-gray-900" />
+              <Heading className="text-sm font-semibold leading-6 text-gray-900 sm:text-base" />
             </div>
             <div className="flex items-center gap-2 ">
               {user && (
@@ -388,7 +389,7 @@ export default function Index() {
                   </ListBox>
                 </Popover>
               </Select>
-              <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
+              <div className="relative flex items-stretch rounded-md bg-white shadow-sm">
                 <Button
                   slot="previous"
                   type="button"
@@ -399,14 +400,13 @@ export default function Index() {
                 </Button>
                 <Button
                   slot={null}
-                  className="hidden select-none items-center border-y border-gray-300  px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:flex"
+                  className="flex select-none items-center border-y border-gray-300 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative sm:px-3.5"
                   onPress={() => {
                     setFocusedDate(today(getLocalTimeZone()));
                   }}
                 >
                   Today
                 </Button>
-                <span className="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
                 <Button
                   slot="next"
                   type="button"
@@ -574,141 +574,110 @@ export default function Index() {
               )}
             </div>
           </div>
-
-          <RACDialog
-            as="div"
-            className="lg:hidden"
-            open={mobileMenuOpen}
-            onClose={setMobileMenuOpen}
-          >
-            <div className="fixed inset-0 z-50" />
-            <RACDialog.Panel className="fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-white px-4 pb-6 sm:max-w-sm sm:px-6 sm:ring-1 sm:ring-gray-900/10">
-              <div className="-ml-0.5 flex h-16 items-center gap-x-6">
-                <button
-                  type="button"
-                  className="-m-2.5 p-2.5 text-gray-700"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <span className="sr-only">Close menu</span>
-                  <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-                <div className="-ml-0.5">
-                  <NavLink to="/" className="flex-shrink-0">
-                    <Logo />
-                  </NavLink>
-                </div>
-              </div>
-              <ul className="mt-2 space-y-2">
-                <li className="group flex w-52 gap-x-3 rounded-md  py-2 pl-2 pr-3 text-sm font-semibold leading-6 text-gray-600 hover:bg-gray-50 hover:text-indigo-600">
-                  {user &&
-                  (user.profile.eduPersonAffiliation === "staff" ||
-                    user.profile.isAdmin) ? (
-                    <Button
-                      slot={null}
-                      onPress={() => {
-                        setIsEventModalOpen(true);
-                        setMobileMenuOpen(false);
-                      }}
-                      // onPress={() => setMobileMenuOpen(false)}
-                      type="button"
-                      className="flex h-full w-full items-center justify-start gap-2 "
-                    >
-                      <PlusIcon className="w-5" />
-                      Add event
-                    </Button>
-                  ) : null}
-                </li>
-                <li className="group flex w-52 gap-x-3 rounded-md  py-2 pl-2 pr-3 text-sm font-semibold leading-6 text-gray-600 hover:bg-gray-50 hover:text-indigo-600">
-                  {user && (
-                    <Select
-                      onSelectionChange={(key) => {
-                        setSelectedCalendar(
-                          calendars.find((calendar) => calendar.id === key),
-                        );
-                      }}
-                      defaultSelectedKey={0}
-                      name="calendar"
-                      placeholder="Select a calendar"
-                      className="flex-col gap-1"
-                    >
-                      <Label className="hidden text-sm">Calendar</Label>
-                      <Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <SelectValue className="block truncate" />
-                        <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                          <ChevronUpDownIcon
-                            className="h-5 w-5 text-gray-400"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      </Button>
-                      <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        <ListBox
-                          className="w-full focus:outline-none"
-                          items={calendars}
-                        >
-                          {(item) => (
-                            <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
-                              {item.name}
-                              <CheckIcon className="hidden w-4 text-emerald-500 group-aria-selected:block" />
-                            </ListBoxItem>
-                          )}
-                        </ListBox>
-                      </Popover>
-                    </Select>
-                  )}
-                </li>
-                <li className="group flex w-52 gap-x-3 rounded-md  py-2 pl-2 pr-3 text-sm font-semibold leading-6 text-gray-600 hover:bg-gray-50 hover:text-indigo-600">
-                  <Select
-                    selectedKey={duration}
-                    onSelectionChange={(key) => {
-                      let value = key.toString() as "month" | "week" | "day";
-                      if (value === "month") {
-                        let newDate = new CalendarDate(
-                          focusedDate.year,
-                          focusedDate.month,
-                          1,
-                        );
-                        setFocusedDate(newDate);
-                      }
-                      setDuration(value);
-                    }}
-                    name="duration"
-                    placeholder="Select duration"
-                    className=" flex flex-col gap-1 "
-                  >
-                    <Label className="hidden text-sm">Duration</Label>
-                    <Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                      <SelectValue className="block truncate" />
-                      <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                        <ChevronUpDownIcon
-                          className="h-5 w-5 text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </Button>
-                    <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                      <ListBox
-                        className="w-full focus:outline-none"
-                        items={Object.keys(visibleDurationMap).map((key) => ({
-                          key,
-                          name: key.charAt(0).toUpperCase() + key.slice(1),
-                          id: key,
-                        }))}
-                      >
-                        {(item) => (
-                          <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
-                            {item.name}
-                            <CheckIcon className="hidden w-4 text-emerald-500 group-aria-selected:block" />
-                          </ListBoxItem>
-                        )}
-                      </ListBox>
-                    </Popover>
-                  </Select>
-                </li>
-              </ul>
-            </RACDialog.Panel>
-          </RACDialog>
         </header>
+        <Toolbar className="flex items-center gap-1 divide-x divide-zinc-100 border-b border-zinc-100 sm:hidden">
+          {user && (
+            <Select
+              onSelectionChange={(key) => {
+                setSelectedCalendar(
+                  calendars.find((calendar) => calendar.id === key),
+                );
+              }}
+              defaultSelectedKey={0}
+              name="calendar"
+              placeholder="Select a calendar"
+              className="flex-1 flex-col gap-1"
+            >
+              <Label className="hidden text-sm">Calendar</Label>
+              <Button className="relative w-full flex-1 cursor-default bg-white py-1.5 pl-3 pr-10 text-left text-gray-700 focus:outline-none">
+                <SelectValue className="block truncate" />
+                <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                  <ChevronUpDownIcon
+                    className="h-5 w-5 text-gray-400"
+                    aria-hidden="true"
+                  />
+                </span>
+              </Button>
+              <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ListBox
+                  className="w-full focus:outline-none"
+                  items={calendars}
+                >
+                  {(item) => (
+                    <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
+                      {item.name}
+                      <CheckIcon className="hidden w-4 text-emerald-500 group-aria-selected:block" />
+                    </ListBoxItem>
+                  )}
+                </ListBox>
+              </Popover>
+            </Select>
+          )}
+
+          <Select
+            selectedKey={duration}
+            onSelectionChange={(key) => {
+              let value = key.toString() as "month" | "week" | "day";
+              if (value === "month") {
+                let newDate = new CalendarDate(
+                  focusedDate.year,
+                  focusedDate.month,
+                  1,
+                );
+                setFocusedDate(newDate);
+              }
+              setDuration(value);
+            }}
+            name="duration"
+            placeholder="Select duration"
+            className="flex flex-1 flex-col gap-1 "
+          >
+            <Label className="hidden text-sm">Duration</Label>
+            <Button className="relative w-full flex-1 cursor-default bg-white py-1.5 pl-3 pr-10 text-left text-gray-900">
+              <SelectValue className="block truncate" />
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
+                <ChevronUpDownIcon
+                  className="h-5 w-5 text-gray-400"
+                  aria-hidden="true"
+                />
+              </span>
+            </Button>
+            <Popover className="z-10 mt-1 max-h-60 min-w-[30ch] overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+              <ListBox
+                className="w-full focus:outline-none"
+                items={Object.keys(visibleDurationMap).map((key) => ({
+                  key,
+                  name: key.charAt(0).toUpperCase() + key.slice(1),
+                  id: key,
+                }))}
+              >
+                {(item) => (
+                  <ListBoxItem className="group relative flex w-full cursor-default select-none items-center justify-between px-2 py-2 text-gray-900 aria-selected:font-semibold focus:bg-indigo-600 focus:text-white focus:outline-none">
+                    {item.name}
+                    <CheckIcon className="hidden w-4 text-emerald-500 group-aria-selected:block" />
+                  </ListBoxItem>
+                )}
+              </ListBox>
+            </Popover>
+          </Select>
+          {user &&
+          (user.profile.eduPersonAffiliation === "staff" ||
+            user.profile.isAdmin) ? (
+            <Button
+              slot={null}
+              onPress={() => {
+                setIsEventModalOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              // onPress={() => setMobileMenuOpen(false)}
+              type="button"
+              className="flex flex-1 items-center gap-2 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              <PlusIcon className="w-5" />
+              Add event
+            </Button>
+          ) : null}
+        </Toolbar>
         <CalendarGrid
           weekdayStyle={duration === "day" ? "long" : "short"}
           className="flex h-fit w-full min-w-full flex-1 flex-col  shadow ring-1 ring-black ring-opacity-5"
