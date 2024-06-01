@@ -435,17 +435,18 @@ export default function Index() {
                 <>
                   <Menu as="div" className="relative flex-shrink-0">
                     <div>
-                      <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <Menu.Button className="relative flex rounded-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-500">
                         <span className="absolute -inset-1.5" />
                         <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-10 w-10 rounded-full"
-                          src={
-                            user?.profile.profilePhoto ||
-                            "https://images.unsplash.com/photo-1544890225-2f3faec4cd60?q=80&w=3850&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                          }
-                          alt=""
-                        />
+                        {user.profile.profilePhoto ? (
+                          <img
+                            className="h-10 w-10 rounded-full"
+                            src={user?.profile.profilePhoto}
+                            alt="User avatar"
+                          />
+                        ) : (
+                          <UserCircleIcon className="h-10 w-10 rounded-full fill-indigo-500" />
+                        )}
                       </Menu.Button>
                     </div>
                     <Transition
@@ -1120,14 +1121,10 @@ export default function Index() {
         onOpenChange={setIsProfileModalOpen}
         isDismissable
         className={({ isEntering, isExiting }) => `
-                  fixed inset-0 z-10 flex min-h-full items-center justify-center overflow-y-auto bg-black/25 p-4 text-center backdrop-blur
-                  ${
-                    isEntering ? "duration-300 ease-out animate-in fade-in" : ""
-                  }
-                  ${
-                    isExiting ? "duration-200 ease-in animate-out fade-out" : ""
-                  }
-                `}
+          fixed inset-0 z-10 flex min-h-full items-center justify-center overflow-y-auto bg-black/25 p-4 text-center backdrop-blur
+          ${isEntering ? "duration-300 ease-out animate-in fade-in" : ""}
+          ${isExiting ? "duration-200 ease-in animate-out fade-out" : ""}
+        `}
       >
         <Modal className=" w-96 ">
           <Dialog className="flex h-full w-full flex-col justify-center bg-opacity-0 p-14 focus:outline-none md:p-4">
@@ -1139,14 +1136,15 @@ export default function Index() {
                     className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
                   >
                     <div className="flex flex-1 flex-col p-8">
-                      <img
-                        className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
-                        src={
-                          user?.profile.profilePhoto ||
-                          "https://images.unsplash.com/photo-1544890225-2f3faec4cd60?q=80&w=3850&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                        }
-                        alt=""
-                      />
+                      {user?.profile.profilePhoto ? (
+                        <img
+                          className="mx-auto h-32 w-32 flex-shrink-0 rounded-full"
+                          src={user?.profile.profilePhoto}
+                          alt=""
+                        />
+                      ) : (
+                        <UserCircleIcon className="mx-auto h-32 w-32 flex-shrink-0 rounded-full fill-indigo-600" />
+                      )}
                       <h3 className="mt-6 text-sm font-medium text-gray-900">
                         {user?.profile.cn || " "}
                       </h3>
