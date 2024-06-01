@@ -21,13 +21,8 @@ import {
   today,
   DateFormatter,
 } from "@internationalized/date";
-import {
-  Bars3Icon,
-  PlusIcon,
-  UserCircleIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/solid";
-import { Dialog as RACDialog, Menu, Transition } from "@headlessui/react";
+import { PlusIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { Menu, Transition } from "@headlessui/react";
 import {
   Button,
   Calendar,
@@ -164,7 +159,6 @@ export default function Index() {
   let [focusedDate, setFocusedDate] = useState<DateValue>(
     today(getLocalTimeZone()),
   );
-  let [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   let visibleDurationMap: Record<"month" | "week" | "day", DateDuration> = {
     month: { months: 1 },
@@ -667,9 +661,7 @@ export default function Index() {
               slot={null}
               onPress={() => {
                 setIsEventModalOpen(true);
-                setMobileMenuOpen(false);
               }}
-              // onPress={() => setMobileMenuOpen(false)}
               type="button"
               className="flex flex-1 items-center gap-2 bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
             >
