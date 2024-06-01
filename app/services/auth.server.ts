@@ -9,31 +9,14 @@ import { env } from "./env";
 // strategies will return and will store in the session
 export interface Profile {
   uid: string;
-  am: string;
-  regyear: string;
-  regsem: string;
-  "givenName;lang-el": string;
-  "sn;lang-el": string;
-  "fathersname;lang-el": string;
-  eduPersonAffiliation: string;
-  eduPersonPrimaryAffiliation: string;
-  title: string;
-  "title;lang-el": string;
-  "cn;lang-el": string;
-  cn: string;
-  sn: string;
-  givenName: string;
-  fathersname: string;
-  secondarymail: string;
-  telephoneNumber: string;
-  labeledURI: string;
-  id: string;
-  mail: string;
-  sem: string;
-  pwdChangedTime: string;
-  socialMedia: SocialMedia;
   profilePhoto: string;
   isAdmin: boolean;
+  eduPersonAffiliation: string;
+  mail: string;
+  am?: string;
+  regyear?: string;
+  title: string;
+  cn: string;
 }
 
 export interface SocialMedia {
@@ -138,7 +121,17 @@ authenticator.use(
         accessToken,
         refreshToken,
         extraParams,
-        profile,
+        profile: {
+          cn: profile.cn,
+          uid: profile.uid,
+          profilePhoto: profile.profilePhoto,
+          eduPersonAffiliation: profile.eduPersonAffiliation,
+          isAdmin: profile.isAdmin,
+          mail: profile.mail,
+          title: profile.title,
+          am: profile.am,
+          regyear: profile.regyear,
+        },
         context,
         request,
       };
