@@ -1,18 +1,33 @@
 import { Fragment, useState } from "react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
   CalendarDaysIcon,
   BookOpenIcon,
   UserGroupIcon,
+  UserCircleIcon,
 } from "@heroicons/react/20/solid";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { redirect } from "@remix-run/node"; // or cloudflare/deno
 
-import { NavLink, Outlet, useLoaderData } from "@remix-run/react";
+import {
+  NavLink,
+  Outlet,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import Logo from "~/components/Logo";
-import { Button } from "react-aria-components";
+import {
+  Button,
+  Dialog,
+  Heading,
+  Menu,
+  MenuItem,
+  MenuTrigger,
+  Modal,
+  Popover,
+} from "react-aria-components";
 import { authenticator } from "~/services/auth.server";
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -38,6 +53,8 @@ function classNames(...classes: string[]) {
 export default function Admin() {
   let [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   let { user } = useLoaderData<typeof loader>();
+  let logoutFetcher = useFetcher();
+  let navigate = useNavigate();
 
   return (
     <>
@@ -91,114 +108,76 @@ export default function Admin() {
             </ul>
           </nav>
           <div className="flex flex-1 items-center justify-end gap-x-8">
-            <button
-              type="button"
-              className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
-            ></button>
-            <Menu as="div" className="relative ml-4 flex-shrink-0">
-              <div>
-                <Menu.Button className="relative flex rounded-full bg-gray-800 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
+            <MenuTrigger>
+              <Button className="relative flex rounded-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-500">
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">Open user menu</span>
+                {user.profile.profilePhoto ? (
                   <img
                     className="h-10 w-10 rounded-full"
-                    src={
-                      user?.profile.profilePhoto ||
-                      "https://images.unsplash.com/photo-1544890225-2f3faec4cd60?q=80&w=3850&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                    }
-                    alt=""
+                    src={user?.profile.profilePhoto}
+                    alt="User avatar"
                   />
-                </Menu.Button>
-              </div>
-              <Transition
-                as={Fragment}
-                enter="transition ease-out duration-100"
-                enterFrom="transform opacity-0 scale-95"
-                enterTo="transform opacity-100 scale-100"
-                leave="transition ease-in duration-75"
-                leaveFrom="transform opacity-100 scale-100"
-                leaveTo="transform opacity-0 scale-95"
-              >
-                <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right list-none rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                  <Menu.Item>
-                    {({ active }) => (
-                      <div
-                        className={classNames(
-                          active ? "bg-gray-100" : "",
-                          "block px-4 py-2 text-sm text-gray-700",
-                        )}
-                      >
-                        <a
-                          className={"flex h-full w-full justify-start "}
-                          href={`/user`}
-                          type="submit"
-                        >
-                          Calendars
-                        </a>
-                      </div>
-                    )}
-                  </Menu.Item>
-                  <Menu.Item>
-                    {({ active }) => (
-                      <div
-                        className={classNames(
-                          active ? "bg-gray-100" : "",
-                          "block px-4 py-2 text-sm text-gray-700",
-                        )}
-                      >
-                        <a
-                          className={"flex h-full w-full justify-start "}
-                          href={`/admin`}
-                          type="submit"
-                        >
-                          Admin
-                        </a>
-                      </div>
-                    )}
-                  </Menu.Item>
-
-                  <Menu.Item key={"item.name"}>
-                    {({ active }) => (
-                      <form
-                        className={classNames(
-                          active ? "bg-gray-100" : "",
-                          "block px-4 py-2 text-sm text-gray-700",
-                        )}
-                        action="/auth/logout"
-                        method="POST"
-                      >
-                        <Button
-                          className={"flex h-full w-full justify-start "}
-                          type="submit"
-                          slot={null}
-                        >
-                          Logout
-                        </Button>
-                      </form>
-                    )}
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </Menu>
+                ) : (
+                  <UserCircleIcon className="h-10 w-10 rounded-full fill-indigo-500" />
+                )}
+              </Button>
+              <Popover>
+                <Menu className="z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  <MenuItem
+                    className={
+                      "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                    }
+                    onAction={() => {
+                      navigate("/user");
+                    }}
+                  >
+                    Calendars
+                  </MenuItem>
+                  {user.profile.isAdmin && (
+                    <MenuItem
+                      className={
+                        "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                      }
+                      onAction={() => {
+                        navigate("/admin");
+                      }}
+                    >
+                      Admin
+                    </MenuItem>
+                  )}
+                  <MenuItem
+                    className={
+                      "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                    }
+                    onAction={() => {
+                      logoutFetcher.submit(
+                        {},
+                        {
+                          method: "POST",
+                          action: "/auth/logout",
+                        },
+                      );
+                    }}
+                  >
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Popover>
+            </MenuTrigger>
           </div>
         </div>
-        <Dialog
-          as="div"
-          className="lg:hidden"
-          open={mobileMenuOpen}
-          onClose={setMobileMenuOpen}
-        >
-          <div className="fixed inset-0 z-50" />
-          <Dialog.Panel className="fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-white px-4 pb-6 sm:max-w-sm sm:px-6 sm:ring-1 sm:ring-gray-900/10">
+        <Modal isOpen={mobileMenuOpen}>
+          <Dialog className="fixed inset-y-0 left-0 z-50 w-full overflow-y-auto bg-white px-4 pb-6 sm:max-w-sm sm:px-6 sm:ring-1 sm:ring-gray-900/10">
+            <Heading className="hidden">Navigation</Heading>
             <div className="-ml-0.5 flex h-16 items-center gap-x-6">
-              <button
-                type="button"
+              <Button
                 className="-m-2.5 p-2.5 text-gray-700"
-                onClick={() => setMobileMenuOpen(false)}
+                onPress={() => setMobileMenuOpen(false)}
               >
                 <span className="sr-only">Close menu</span>
                 <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-              </button>
+              </Button>
               <div className="-ml-0.5">
                 <NavLink to="/" className="flex-shrink-0">
                   <Logo />
@@ -207,7 +186,10 @@ export default function Admin() {
             </div>
             <ul className="mt-2 space-y-2">
               {secondaryNavigation
-                .map((item) => ({ ...item, current: false }))
+                .map((item) => {
+                  // @TODO check if the current url matches the href
+                  return { ...item, current: false };
+                })
                 .map((item) => (
                   <li key={item.name}>
                     <a
@@ -224,7 +206,7 @@ export default function Admin() {
                           item.current
                             ? "text-indigo-600"
                             : "text-gray-400 group-hover:text-indigo-600",
-                          "h-6 w-6 shrink-0",
+                          "h-5 w-5 shrink-0",
                         )}
                         aria-hidden="true"
                       />
@@ -233,8 +215,8 @@ export default function Admin() {
                   </li>
                 ))}
             </ul>
-          </Dialog.Panel>
-        </Dialog>
+          </Dialog>
+        </Modal>
       </header>
 
       <div className=" max-w-full p-4 sm:p-16">

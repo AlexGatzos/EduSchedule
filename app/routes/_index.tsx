@@ -8,7 +8,12 @@ import {
   ClockIcon,
   EnvelopeIcon,
 } from "@heroicons/react/20/solid";
-import { NavLink, useLoaderData } from "@remix-run/react";
+import {
+  NavLink,
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+} from "@remix-run/react";
 import { prisma } from "~/database.server";
 
 import type { DateDuration } from "@internationalized/date";
@@ -22,7 +27,6 @@ import {
   DateFormatter,
 } from "@internationalized/date";
 import { PlusIcon, UserCircleIcon } from "@heroicons/react/24/solid";
-import { Menu, Transition } from "@headlessui/react";
 import {
   Button,
   Calendar,
@@ -37,6 +41,9 @@ import {
   Label,
   ListBox,
   ListBoxItem,
+  Menu,
+  MenuItem,
+  MenuTrigger,
   Modal,
   ModalOverlay,
   Popover,
@@ -160,6 +167,9 @@ export default function Index() {
     today(getLocalTimeZone()),
   );
 
+  let logoutFetcher = useFetcher();
+  let navigate = useNavigate();
+
   let visibleDurationMap: Record<"month" | "week" | "day", DateDuration> = {
     month: { months: 1 },
     week: { weeks: 1 },
@@ -282,17 +292,6 @@ export default function Index() {
         <header className="flex border-b border-gray-900/10 py-4">
           <div className="flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex flex-1 items-center gap-x-3">
-              {/* <button
-                type="button"
-                className="-m-3 p-3 md:hidden"
-                onClick={() => setMobileMenuOpen(true)}
-              >
-                <span className="sr-only">Open main menu</span>
-                <Bars3Icon
-                  className="h-5 w-5 text-gray-900"
-                  aria-hidden="true"
-                />
-              </button> */}
               <NavLink to="/" className="flex-shrink-0">
                 <Logo />
               </NavLink>
@@ -427,115 +426,76 @@ export default function Index() {
 
               {user ? (
                 <>
-                  <Menu as="div" className="relative flex-shrink-0">
-                    <div>
-                      <Menu.Button className="relative flex rounded-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-500">
-                        <span className="absolute -inset-1.5" />
-                        <span className="sr-only">Open user menu</span>
-                        {user.profile.profilePhoto ? (
-                          <img
-                            className="h-10 w-10 rounded-full"
-                            src={user?.profile.profilePhoto}
-                            alt="User avatar"
-                          />
-                        ) : (
-                          <UserCircleIcon className="h-10 w-10 rounded-full fill-indigo-500" />
-                        )}
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
+                  <MenuTrigger>
+                    <Button
+                      slot={null}
+                      className="relative flex rounded-full text-sm text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-indigo-500"
                     >
-                      <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <div
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
-                              )}
-                            >
-                              <Button
-                                className={"flex h-full w-full justify-start "}
-                                slot={null}
-                                onPress={() => setIsProfileModalOpen(true)}
-                              >
-                                Your Profile
-                              </Button>
-                            </div>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <div
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
-                              )}
-                            >
-                              <a
-                                className={"flex h-full w-full justify-start "}
-                                href={`/user`}
-                                type="submit"
-                              >
-                                Calendars
-                              </a>
-                            </div>
-                          )}
-                        </Menu.Item>
-
-                        {user.profile.isAdmin ? (
-                          <Menu.Item>
-                            {({ active }) => (
-                              <div
-                                className={classNames(
-                                  active ? "bg-gray-100" : "",
-                                  "block px-4 py-2 text-sm text-gray-700",
-                                )}
-                              >
-                                <a
-                                  className={
-                                    "flex h-full w-full justify-start "
-                                  }
-                                  href={`/admin`}
-                                  type="submit"
-                                >
-                                  Admin
-                                </a>
-                              </div>
-                            )}
-                          </Menu.Item>
-                        ) : null}
-
-                        <Menu.Item key={"item.name"}>
-                          {({ active }) => (
-                            <form
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
-                              )}
-                              action="/auth/logout"
-                              method="POST"
-                            >
-                              <Button
-                                className={"flex h-full w-full justify-start "}
-                                type="submit"
-                                slot={null}
-                              >
-                                Logout
-                              </Button>
-                            </form>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>{" "}
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">Open user menu</span>
+                      {user.profile.profilePhoto ? (
+                        <img
+                          className="h-10 w-10 rounded-full"
+                          src={user?.profile.profilePhoto}
+                          alt="User avatar"
+                        />
+                      ) : (
+                        <UserCircleIcon className="h-10 w-10 rounded-full fill-indigo-500" />
+                      )}
+                    </Button>
+                    <Popover>
+                      <Menu className="z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <MenuItem
+                          className={
+                            "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                          }
+                          onAction={() => {
+                            setIsProfileModalOpen(true);
+                          }}
+                        >
+                          Your Profile
+                        </MenuItem>
+                        <MenuItem
+                          className={
+                            "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                          }
+                          onAction={() => {
+                            navigate("/user");
+                          }}
+                        >
+                          Calendars
+                        </MenuItem>
+                        {user.profile.isAdmin && (
+                          <MenuItem
+                            className={
+                              "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                            }
+                            onAction={() => {
+                              navigate("/admin");
+                            }}
+                          >
+                            Admin
+                          </MenuItem>
+                        )}
+                        <MenuItem
+                          className={
+                            "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                          }
+                          onAction={() => {
+                            logoutFetcher.submit(
+                              {},
+                              {
+                                method: "POST",
+                                action: "/auth/logout",
+                              },
+                            );
+                          }}
+                        >
+                          Logout
+                        </MenuItem>
+                      </Menu>
+                    </Popover>
+                  </MenuTrigger>
                 </>
               ) : (
                 <NavLink
