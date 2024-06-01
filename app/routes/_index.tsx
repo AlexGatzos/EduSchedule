@@ -51,7 +51,7 @@ import {
   SelectValue,
   Toolbar,
 } from "react-aria-components";
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import type { DateValue } from "react-aria-components";
 import { CreateEventModal } from "~/components/create-event-modal";
 import { EditEventModal } from "~/components/edit-event-modal";
@@ -153,6 +153,26 @@ export default function Index() {
   let [eventId, setEventId] = useState<number>();
   let { user, calendars, allCourses, events, courses, classrooms, repeat } =
     useLoaderData<typeof loader>();
+  useEffect(() => {
+    let calendarElement = document.getElementById("calendar");
+
+    let handleDoubleClick = () => {
+      if (
+        user &&
+        (user.profile.eduPersonAffiliation === "staff" || user.profile.isAdmin)
+      ) {
+        setIsEventModalOpen(true);
+      }
+    };
+
+    if (calendarElement) {
+      calendarElement.addEventListener("dblclick", handleDoubleClick);
+
+      return () => {
+        calendarElement.removeEventListener("dblclick", handleDoubleClick);
+      };
+    }
+  }, [user, setIsEventModalOpen]);
 
   let [selectedCalendar, setSelectedCalendar] = useState<{
     id: number;
@@ -271,7 +291,7 @@ export default function Index() {
     : [];
 
   return (
-    <div className="flex h-full flex-col">
+    <div id="calendar" className="flex h-full flex-col">
       <Calendar
         aria-label="Courses"
         className="flex h-full w-full flex-1 flex-col "
@@ -280,13 +300,13 @@ export default function Index() {
         visibleDuration={visibleDuration}
         onChange={(date) => {
           setSelectedDate(date);
-          if (
-            user &&
-            (user.profile.eduPersonAffiliation === "staff" ||
-              user.profile.isAdmin)
-          ) {
-            setIsEventModalOpen(true);
-          }
+          // if (
+          //   user &&
+          //   (user.profile.eduPersonAffiliation === "staff" ||
+          //     user.profile.isAdmin)
+          // ) {
+          //   setIsEventModalOpen(true);
+          // }
         }}
       >
         <header className="flex border-b border-gray-900/10 py-4">
@@ -1022,7 +1042,7 @@ export default function Index() {
         `}
       >
         <Modal className=" w-96 ">
-          <Dialog className="flex h-full w-full flex-col justify-center bg-opacity-0 p-14 focus:outline-none md:p-4">
+          <Dialog className="flex h-full w-full flex-col justify-center bg-opacity-0 p-8 focus:outline-none md:p-4">
             {({ close }) => (
               <div>
                 <ul className="grid grid-cols-1  gap-6 rounded-lg border border-indigo-300 border-opacity-20 shadow-2xl shadow-indigo-200">

@@ -98,7 +98,7 @@ export function EditEventModal(
       isDismissable
       className="fixed inset-0 bg-zinc-100 bg-opacity-30 backdrop-blur"
     >
-      <Modal className="fixed bottom-0 right-0 top-0 max-w-[430px] border-l border-gray-400 bg-zinc-50 shadow-lg outline-none">
+      <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none sm:w-96">
         <Dialog className="relative flex h-full w-full flex-col gap-4 p-4 pt-2 focus:outline-none">
           {({ close }) => (
             <>

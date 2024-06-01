@@ -87,7 +87,7 @@ export function CreateEventModal(
       ${isExiting ? "duration-200 ease-in animate-out fade-out" : ""}
     `}
     >
-      <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none md:w-96">
+      <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none sm:w-96">
         <Dialog className="flex h-full w-full flex-col gap-4 p-4 focus:outline-none">
           <Heading
             slot="title"

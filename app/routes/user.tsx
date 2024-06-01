@@ -61,14 +61,13 @@ export default function Admin() {
       <header className="flex border-b border-gray-900/10 py-4">
         <div className="flex w-full items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex flex-1 items-center gap-x-3">
-            <button
-              type="button"
+            <Button
               className="-m-3 p-3 md:hidden"
-              onClick={() => setMobileMenuOpen(true)}
+              onPress={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
               <Bars3Icon className="h-5 w-5 text-gray-900" aria-hidden="true" />
-            </button>
+            </Button>
             <NavLink to="/" className="flex-shrink-0">
               <Logo />
             </NavLink>
@@ -123,7 +122,7 @@ export default function Admin() {
                 )}
               </Button>
               <Popover>
-                <Menu className="z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu className="z-10 mt-2 w-48 origin-top-right select-none rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <MenuItem
                     className={
                       "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
