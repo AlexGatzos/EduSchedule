@@ -1,38 +1,53 @@
-# Welcome to Remix!
+# EduSchedule
 
-- [Remix Docs](https://remix.run/docs)
+## Running the app
 
-## Development
+Make sure to add the appropriate envirnment variables in the root as a .env file:
 
-From your terminal:
+```.env
+DATABASE_URL="file:./dev.db"
+ADMIN_UID = "XXXXXXXXXXXXXXXXX"
+IHU_OAUTH_CLIENT_ID = "XXXXXXXXXXXXXXXXX"
+IHU_OAUTH_CLIENT_SECRET = "XXXXXXXXXXXXXXXXX"
+IHU_OAUTH_REDIRECT_URI = "http://localhost:3000/auth/callback"
+```
 
 ```sh
+# Development
 npm run dev
-```
 
-This starts your app in development mode, rebuilding assets on file changes.
-
-## Deployment
-
-First, build your app for production:
-
-```sh
+# Production
 npm run build
-```
-
-Then run the app in production mode:
-
-```sh
 npm start
 ```
 
-Now you'll need to pick a host to deploy it to.
+## Running the app forever in a linux server:
 
-### DIY
+First create a new systemd service in e.g. `/lib/systemd/system/eduschedule.service`:
 
-If you're familiar with deploying node applications, the built-in Remix app server is production-ready.
+```
+[Unit]
+Description=EduSchedule
+After=network.target
 
-Make sure to deploy the output of `remix build`
+[Service]
+Type=simple
+User=<USER_NAME>
+WorkingDirectory=<DIRECTORY_THE_APP_IS_ON>
+ExecStart=/usr/bin/npm start
+Restart=on-failure
 
-- `build/`
-- `public/build/`
+[Install]
+WantedBy=multi-user.target
+```
+
+```sh
+# Start the service
+sudo systemctl start eduschedule.service
+
+# Check that the service is running
+sudo systemctl status eduschedule.service
+
+# Enable the service to run when the linux OS starts
+sudo systemctl enable eduschedule.service
+```
