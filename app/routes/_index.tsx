@@ -783,7 +783,7 @@ export default function Index() {
                     isArgia ? "bg-yellow-300/30" : "",
                     !isDateForCurrentMonth ? "bg-gray-50 text-gray-400" : "",
                     isDateForCurrentMonth ? "text-gray-900" : "",
-                    "relative flex h-full w-full flex-col p-3 outline-none ring-indigo-300 data-[focused]:ring",
+                    "relative flex h-full  w-full flex-col p-3 outline-none ring-indigo-300 data-[focused]:ring",
                   )}
                 >
                   <span className="flex w-full items-center justify-end">
@@ -944,7 +944,7 @@ export default function Index() {
                           <div className="text-sm text-gray-500">
                             {dayEvents.length > 0 && (
                               <span className="-mx-0.5 mt-auto flex flex-wrap-reverse">
-                                {dayEvents.map((event) => (
+                                {dayEvents.slice(0, 6).map((event) => (
                                   <span
                                     key={event.id}
                                     className="mx-0.5 mb-1 h-1.5 w-1.5 rounded-full bg-gray-400"
