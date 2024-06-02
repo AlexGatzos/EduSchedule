@@ -3,7 +3,7 @@ import * as React from "react";
 function Logo(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      className="fill-indigo-800"
+      className="fill-indigo-500"
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 971.000000 959.000000"
       {...props}
