@@ -181,6 +181,7 @@ export default function Index() {
     courseIds: string;
   }>();
   let [selectedDate, setSelectedDate] = useState<DateValue>();
+
   let selectedEvent = events.find((event) => event.id === eventId);
   let [duration, setDuration] = useState<"month" | "week" | "day">("month");
   let [focusedDate, setFocusedDate] = useState<DateValue>(
@@ -216,6 +217,27 @@ export default function Index() {
         );
       })
     : false;
+
+  // let excludedDatess = events.map((event) =>
+  //   event.excludedDates ? new Date(event.excludedDates) : null,
+  // );
+
+  // // Αφαιρούμε τις null τιμές από τον πίνακα excludedDates
+  // excludedDatess = excludedDatess.filter((date) => date !== null);
+  // console.log(excludedDatess);
+
+  // let excludedDate = selectedDate
+  //   ? excludedDatess.some((excludedDate) => {
+  //       return (
+  //         selectedDate.toDate(getLocalTimeZone()).getDate() ===
+  //           excludedDate.getDate() &&
+  //         selectedDate.toDate(getLocalTimeZone()).getMonth() ===
+  //           excludedDate.getMonth() - 1 &&
+  //         selectedDate.toDate(getLocalTimeZone()).getFullYear() ===
+  //           excludedDate.getFullYear()
+  //       );
+  //     })
+  //   : false;
 
   let todaysEvents: Array<{
     id: number;
@@ -300,6 +322,7 @@ export default function Index() {
         visibleDuration={visibleDuration}
         onChange={(date) => {
           setSelectedDate(date);
+
           // if (
           //   user &&
           //   (user.profile.eduPersonAffiliation === "staff" ||
@@ -692,7 +715,7 @@ export default function Index() {
             {(date) => {
               let excludedDates = [
                 new Date(2024, 5, 1),
-                new Date(2024, 3, 12),
+                new Date(2024, 3, 11),
                 // ...
               ];
 
@@ -706,6 +729,9 @@ export default function Index() {
                     excludedDate.getFullYear()
                 );
               });
+              // Assuming `events` is an array of event objects
+
+              // console.log(excludedDate);
 
               let dayEvents = events
                 .filter((event) => {
@@ -754,6 +780,8 @@ export default function Index() {
                     date.toDate("UTC") >= new Date(event.startDate) &&
                     date.toDate("UTC") <= new Date(event.endDate);
 
+                  console.log("isDateBetweenEvent", isDateBetweenEvent);
+
                   // If event is inside the semester return the event if not return false
                   return (
                     isDateBetweenEvent &&
@@ -762,6 +790,31 @@ export default function Index() {
                       isWeeklyRepeatingEvent ||
                       isYearlyRepeatingEvent) !== isArgia
                   );
+                })
+                .filter((event) => {
+                  let excludedDates: string[] = [];
+
+                  try {
+                    excludedDates = JSON.parse(
+                      event.excludedDates || "[]",
+                    ) as string[];
+                  } catch (error) {
+                    console.error(error);
+                  }
+
+                  let isExcludedInThisDate = excludedDates.some((exclDate) => {
+                    let excludedDate = new Date(exclDate);
+                    let isExcluded =
+                      excludedDate.getDate() === date.day &&
+                      excludedDate.getMonth() === date.month - 1 &&
+                      excludedDate.getFullYear() === date.year;
+
+                    return isExcluded;
+                  });
+                  if (isExcludedInThisDate) {
+                    return false;
+                  }
+                  return true;
                 })
                 .sort((a, b) => {
                   return a.startTime.localeCompare(b.startTime);
@@ -781,6 +834,7 @@ export default function Index() {
                       : "",
                     isDateForCurrentMonth ? "bg-white" : "",
                     isArgia ? "bg-yellow-300/30" : "",
+
                     !isDateForCurrentMonth ? "bg-gray-50 text-gray-400" : "",
                     isDateForCurrentMonth ? "text-gray-900" : "",
                     "relative flex h-full  w-full flex-col p-3 outline-none ring-indigo-300 data-[focused]:ring",
@@ -809,12 +863,17 @@ export default function Index() {
                           >
                             <Button
                               slot={null}
-                              onPress={() => setEventId(event.id)}
+                              onPress={() => {
+                                setEventId(event.id);
+                                setSelectedDate(date);
+                              }}
                               className="group flex w-full items-center justify-between gap-1 rounded px-1 transition-colors @container hover:bg-indigo-500/15"
                             >
-                              <p className="truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">
-                                {event.name}
-                              </p>
+                              {
+                                <p className="truncate text-sm font-medium text-gray-900 group-hover:text-indigo-600">
+                                  {event.name}
+                                </p>
+                              }
                               <time
                                 dateTime={event.startDate}
                                 className="hidden flex-none flex-nowrap items-center text-xs text-gray-500 group-hover:text-indigo-600 @[100px]:flex"
@@ -1019,6 +1078,7 @@ export default function Index() {
                 user.profile.isAdmin),
           )}
           repeat={repeat}
+          selectedDate={selectedDate}
           courses={courses}
           classrooms={classrooms}
           isOpen={Boolean(eventId)}

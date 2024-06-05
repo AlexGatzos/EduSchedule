@@ -5,6 +5,7 @@ import { authenticator } from "~/services/auth.server";
 
 let ParamsSchema = z.object({
   id: z.coerce.number(),
+  date: z.string(),
 });
 
 export async function action(args: ActionFunctionArgs) {
@@ -17,9 +18,29 @@ export async function action(args: ActionFunctionArgs) {
   if (user.profile.eduPersonAffiliation === "staff" || user.profile.isAdmin) {
     let params = ParamsSchema.parse(args.params);
 
-    await prisma.event.delete({
+    let event = await prisma.event.findUnique({
       where: {
         id: params.id,
+      },
+    });
+
+    if (!event) {
+      throw new Error("Event not found");
+    }
+
+    let excludedDates = [];
+    try {
+      excludedDates = JSON.parse(event.excludedDates || "[]");
+    } catch (error) {
+      console.error(error);
+    }
+
+    await prisma.event.update({
+      where: {
+        id: params.id,
+      },
+      data: {
+        excludedDates: JSON.stringify(excludedDates.concat(params.date)),
       },
     });
 
@@ -29,7 +50,7 @@ export async function action(args: ActionFunctionArgs) {
   }
 
   return {
-    error: "Cannot delete event",
+    error: "Cannot delete event.",
   };
 }
 

@@ -30,7 +30,7 @@ model Event {
   courseId       Int
   teachers       Teacher?  @relation(fields: [teachersId], references: [id])
   teachersId     Int?
-  // excludedDates  String? // ["2022-01-01", "2022-01-02"]
+  excludedDates  String? // ["2022-01-01", "2022-01-02"]
 }
 
 model Classroom {

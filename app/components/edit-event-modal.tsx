@@ -17,7 +17,7 @@ import {
 import { Time, fromDate, getLocalTimeZone } from "@internationalized/date";
 import { useFetcher } from "@remix-run/react";
 import { useEffect } from "react";
-import type { ModalOverlayProps } from "react-aria-components";
+import type { DateValue, ModalOverlayProps } from "react-aria-components";
 import {
   ModalOverlay,
   Modal,
@@ -47,12 +47,16 @@ import {
   Input,
   TextField,
 } from "react-aria-components";
+import type { ActionData as DeleteEventActionData } from "~/routes/event.$id.delete";
+import type { ActionData as DeleteDateActionData } from "~/routes/event.$id.$date.delete";
+
 import type { ActionData } from "~/routes/event.$id.update";
 
 export function EditEventModal(
   props: ModalOverlayProps &
     React.RefAttributes<HTMLDivElement> & {
       isAuthenticated: boolean;
+      selectedDate?: DateValue | null;
       courses: { id: number; name: string }[];
       classrooms: { id: number; name: string }[];
       repeat: { id: string; name: string }[];
@@ -73,6 +77,7 @@ export function EditEventModal(
 ) {
   let {
     isAuthenticated,
+    selectedDate,
     courses,
     classrooms,
     repeat,
@@ -81,7 +86,8 @@ export function EditEventModal(
     selectedEvent,
   } = props;
   let { state, data, submit } = useFetcher<ActionData>();
-  let deleteFetcher = useFetcher();
+  let deleteFetcher = useFetcher<DeleteEventActionData>();
+  let deleteDateFetcher = useFetcher<DeleteDateActionData>();
 
   let errors = data && "errors" in data ? data.errors : undefined;
 
@@ -90,6 +96,18 @@ export function EditEventModal(
       onOpenChange?.(false);
     }
   }, [data, errors, onOpenChange, state]);
+
+  useEffect(() => {
+    if (deleteFetcher.data && deleteFetcher.state !== "idle") {
+      onOpenChange?.(false);
+    }
+  }, [deleteFetcher.data, deleteFetcher.state, onOpenChange, state]);
+
+  useEffect(() => {
+    if (deleteDateFetcher.data && deleteDateFetcher.state !== "idle") {
+      onOpenChange?.(false);
+    }
+  }, [deleteDateFetcher.data, deleteDateFetcher.state, onOpenChange, state]);
 
   return (
     <ModalOverlay
@@ -206,7 +224,6 @@ export function EditEventModal(
                       <Label className="text-sm">Time</Label>
                       <div className="relative flex w-full cursor-default items-center gap-2 rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <TimeField
-                          // value={parseTime(selectedEvent?.startTime) ?? ""}
                           defaultValue={
                             new Time(
                               parseInt(
@@ -454,9 +471,22 @@ export function EditEventModal(
                       type="submit"
                     >
                       <TrashIcon className="w-4" />
-                      Delete
+                      Delete event
                     </Button>
                   </deleteFetcher.Form>
+                  <deleteDateFetcher.Form
+                    method="post"
+                    action={`/event/${selectedEvent?.id}/${selectedDate}/delete`}
+                    className="flex flex-col gap-3"
+                  >
+                    <Button
+                      className="flex items-center gap-2 rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
+                      type="submit"
+                    >
+                      <TrashIcon className="w-4" />
+                      Delete event for {selectedDate?.toString()}
+                    </Button>
+                  </deleteDateFetcher.Form>
                 </>
               )}
               {!isAuthenticated && (

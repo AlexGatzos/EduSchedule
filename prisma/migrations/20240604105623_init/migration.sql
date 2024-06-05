@@ -12,6 +12,7 @@ CREATE TABLE "Event" (
     "classroomId" INTEGER NOT NULL,
     "courseId" INTEGER NOT NULL,
     "teachersId" INTEGER,
+    "excludedDates" TEXT,
     CONSTRAINT "Event_classroomId_fkey" FOREIGN KEY ("classroomId") REFERENCES "Classroom" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Event_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Event_teachersId_fkey" FOREIGN KEY ("teachersId") REFERENCES "Teacher" ("id") ON DELETE SET NULL ON UPDATE CASCADE

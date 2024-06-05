@@ -18,6 +18,7 @@ Table Event {
   courseId Int [not null]
   teachers Teacher
   teachersId Int
+  excludedDates String
 }
 
 Table Classroom {
