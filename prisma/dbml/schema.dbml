@@ -67,12 +67,12 @@ Table Calendars {
   courseIds String [not null]
 }
 
-Ref: Event.classroomId > Classroom.id
+Ref: Event.classroomId > Classroom.id [delete: Cascade]
 
-Ref: Event.courseId > Course.id
+Ref: Event.courseId > Course.id [delete: Cascade]
 
-Ref: Event.teachersId > Teacher.id
+Ref: Event.teachersId > Teacher.id [delete: Cascade]
 
-Ref: CourseTeachers.courseId > Course.course_id
+Ref: CourseTeachers.courseId > Course.course_id [delete: Cascade]
 
-Ref: CourseTeachers.teacherId > Teacher.teacher_id
+Ref: CourseTeachers.teacherId > Teacher.teacher_id [delete: Cascade]

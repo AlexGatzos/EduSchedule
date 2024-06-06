@@ -13,9 +13,9 @@ CREATE TABLE "Event" (
     "courseId" INTEGER NOT NULL,
     "teachersId" INTEGER,
     "excludedDates" TEXT,
-    CONSTRAINT "Event_classroomId_fkey" FOREIGN KEY ("classroomId") REFERENCES "Classroom" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Event_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Event_teachersId_fkey" FOREIGN KEY ("teachersId") REFERENCES "Teacher" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "Event_classroomId_fkey" FOREIGN KEY ("classroomId") REFERENCES "Classroom" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Event_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "Event_teachersId_fkey" FOREIGN KEY ("teachersId") REFERENCES "Teacher" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -50,8 +50,8 @@ CREATE TABLE "CourseTeachers" (
     "teacherId" INTEGER NOT NULL,
 
     PRIMARY KEY ("courseId", "teacherId"),
-    CONSTRAINT "CourseTeachers_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("course_id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "CourseTeachers_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher" ("teacher_id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "CourseTeachers_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "Course" ("course_id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "CourseTeachers_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "Teacher" ("teacher_id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
