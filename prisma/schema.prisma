@@ -24,11 +24,11 @@ model Event {
   repeatInterval String
   startDate      DateTime
   endDate        DateTime
-  classroom      Classroom @relation(fields: [classroomId], references: [id])
+  classroom      Classroom @relation(fields: [classroomId], references: [id], onDelete: Cascade)
   classroomId    Int
-  course         Course    @relation(fields: [courseId], references: [id])
+  course         Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
   courseId       Int
-  teachers       Teacher?  @relation(fields: [teachersId], references: [id])
+  teachers       Teacher?  @relation(fields: [teachersId], references: [id], onDelete: Cascade)
   teachersId     Int?
   excludedDates  String? // ["2022-01-01", "2022-01-02"]
 }
@@ -62,9 +62,9 @@ model Teacher {
 }
 
 model CourseTeachers {
-  course    Course  @relation(fields: [courseId], references: [course_id])
+  course    Course  @relation(fields: [courseId], references: [course_id], onDelete: Cascade)
   courseId  Int
-  teacher   Teacher @relation(fields: [teacherId], references: [teacher_id])
+  teacher   Teacher @relation(fields: [teacherId], references: [teacher_id], onDelete: Cascade)
   teacherId Int
 
   @@id([courseId, teacherId])
