@@ -62,9 +62,9 @@ model Teacher {
 }
 
 model CourseTeachers {
-  course    Course  @relation(fields: [courseId], references: [course_id], onDelete: Cascade)
+  course    Course  @relation(fields: [courseId], references: [course_id], onDelete: Cascade, onUpdate: Cascade)
   courseId  Int
-  teacher   Teacher @relation(fields: [teacherId], references: [teacher_id], onDelete: Cascade)
+  teacher   Teacher @relation(fields: [teacherId], references: [teacher_id], onDelete: Cascade, onUpdate: Cascade)
   teacherId Int
 
   @@id([courseId, teacherId])

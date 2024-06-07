@@ -1,5 +1,6 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
+
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { prisma } from "~/database.server";
@@ -42,6 +43,11 @@ export async function action(args: ActionFunctionArgs) {
   }
 
   let { teacherIds, ...data } = UpdateCourseSchema.parse(formData);
+  await prisma.courseTeachers.deleteMany({
+    where: {
+      courseId: course.course_id,
+    },
+  });
 
   await prisma.course.update({
     where: {
