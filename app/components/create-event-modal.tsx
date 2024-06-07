@@ -88,7 +88,7 @@ export function CreateEventModal(
     `}
     >
       <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none sm:w-96">
-        <Dialog className="flex h-full w-full flex-col gap-4 p-4 focus:outline-none">
+        <Dialog className="flex h-full w-full flex-col gap-4 overflow-y-auto p-4 focus:outline-none">
           <Heading
             slot="title"
             className="flex items-center gap-2 text-lg font-semibold"

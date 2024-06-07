@@ -202,7 +202,7 @@ export default function Index() {
   let excludedDates = [
     new Date(2024, 5, 1),
     new Date(2024, 3, 12),
-    // ...
+    //  ...
   ];
 
   let isArgia = selectedDate
@@ -217,27 +217,6 @@ export default function Index() {
         );
       })
     : false;
-
-  // let excludedDatess = events.map((event) =>
-  //   event.excludedDates ? new Date(event.excludedDates) : null,
-  // );
-
-  // // Αφαιρούμε τις null τιμές από τον πίνακα excludedDates
-  // excludedDatess = excludedDatess.filter((date) => date !== null);
-  // console.log(excludedDatess);
-
-  // let excludedDate = selectedDate
-  //   ? excludedDatess.some((excludedDate) => {
-  //       return (
-  //         selectedDate.toDate(getLocalTimeZone()).getDate() ===
-  //           excludedDate.getDate() &&
-  //         selectedDate.toDate(getLocalTimeZone()).getMonth() ===
-  //           excludedDate.getMonth() - 1 &&
-  //         selectedDate.toDate(getLocalTimeZone()).getFullYear() ===
-  //           excludedDate.getFullYear()
-  //       );
-  //     })
-  //   : false;
 
   let todaysEvents: Array<{
     id: number;
@@ -731,8 +710,6 @@ export default function Index() {
               });
               // Assuming `events` is an array of event objects
 
-              // console.log(excludedDate);
-
               let dayEvents = events
                 .filter((event) => {
                   if (selectedCalendar) {
@@ -779,8 +756,6 @@ export default function Index() {
                   let isDateBetweenEvent =
                     date.toDate("UTC") >= new Date(event.startDate) &&
                     date.toDate("UTC") <= new Date(event.endDate);
-
-                  console.log("isDateBetweenEvent", isDateBetweenEvent);
 
                   // If event is inside the semester return the event if not return false
                   return (

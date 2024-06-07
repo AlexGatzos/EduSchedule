@@ -36,6 +36,7 @@ export function EditCourseModal(
 ) {
   let { course, isOpen, onOpenChange, teachers } = props;
   let [selectedTeachers, setSelectedTeachers] = useState(new Set());
+  console.log("SelectedTeachers", selectedTeachers);
 
   return (
     <ModalOverlay
@@ -45,7 +46,7 @@ export function EditCourseModal(
       className="fixed inset-0 z-10 bg-zinc-100 bg-opacity-30 backdrop-blur"
     >
       <Modal className="fixed bottom-0 right-0 top-0 border-l border-gray-400 bg-zinc-50 shadow-lg outline-none sm:w-96">
-        <Dialog className="flex h-full w-full flex-col gap-4 p-4 focus:outline-none">
+        <Dialog className="flex h-full w-full flex-col gap-4 overflow-y-auto p-4 focus:outline-none">
           {({ close }) => (
             <>
               <Heading
@@ -103,13 +104,15 @@ export function EditCourseModal(
                   <span className="text-sm">Teachers</span>
                 </Label>
                 <input
-                  className="hidden"
+                  className=""
                   name="teacherIds"
                   value={[...selectedTeachers.values()].join(",")}
                 />
                 <ListBox
                   onSelectionChange={(selected) => {
                     setSelectedTeachers(new Set(selected));
+                    console.log(selected);
+                    console.log(selectedTeachers);
                   }}
                   defaultSelectedKeys={course.teachers.map(
                     (teacher) => teacher.teacher.teacher_id,
@@ -144,6 +147,9 @@ export function EditCourseModal(
                 <Button
                   className="flex items-center gap-2 justify-self-end rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   type="submit"
+                  onPress={() => {
+                    console.log(selectedTeachers);
+                  }}
                 >
                   <ArrowRightStartOnRectangleIcon className="w-4" />
                   Save
