@@ -471,6 +471,24 @@ export default function Index() {
                           className={
                             "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
                           }
+                          onAction={async () => {
+                            let response = await fetch("/export-ics");
+                            let blob = await response.blob();
+                            let url = window.URL.createObjectURL(blob);
+                            let a = document.createElement("a");
+                            a.href = url;
+                            a.download = "calendar.ics";
+                            document.body.appendChild(a);
+                            a.click();
+                            a.remove();
+                          }}
+                        >
+                          Export Calendar
+                        </MenuItem>
+                        <MenuItem
+                          className={
+                            "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
+                          }
                           onAction={() => {
                             setIsProfileModalOpen(true);
                           }}
