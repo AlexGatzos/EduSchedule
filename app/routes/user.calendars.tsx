@@ -19,7 +19,10 @@ import {
 } from "react-aria-components";
 import { authenticator } from "~/services/auth.server";
 import { useRef, useState } from "react";
-import { CalendarDaysIcon } from "@heroicons/react/24/solid";
+import {
+  CalendarDaysIcon,
+  CloudArrowDownIcon,
+} from "@heroicons/react/24/solid";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   let user = await authenticator.isAuthenticated(request);
@@ -86,17 +89,36 @@ export default function Calendars() {
                   <CalendarDaysIcon className="w-5" />
                   {calendar.name}
                 </div>
-                <Button
-                  className="flex items-center gap-2 rounded-md bg-white/50 px-2 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
-                  onPress={() => {
-                    deleteCourseFetcher.submit(null, {
-                      method: "DELETE",
-                      action: `/user/calendars/${calendar.id}/delete`,
-                    });
-                  }}
-                >
-                  <TrashIcon className="w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                    onPress={async () => {
+                      let response = await fetch(`/export-ics/${calendar.id}`);
+                      let blob = await response.blob();
+                      let url = window.URL.createObjectURL(blob);
+                      let a = document.createElement("a");
+                      a.href = url;
+                      a.download = "calendar.ics";
+                      document.body.appendChild(a);
+                      a.click();
+                      a.remove();
+                      console.log("response", response);
+                    }}
+                  >
+                    <CloudArrowDownIcon className="h-4 w-4 text-gray-400" />
+                  </Button>
+                  <Button
+                    className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-red-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                    onPress={() => {
+                      deleteCourseFetcher.submit(null, {
+                        method: "DELETE",
+                        action: `/user/calendars/${calendar.id}/delete`,
+                      });
+                    }}
+                  >
+                    <TrashIcon className="h-4 w-4 text-gray-400" />
+                  </Button>
+                </div>
               </Header>
 
               {calendar.courses.map((course) => (
