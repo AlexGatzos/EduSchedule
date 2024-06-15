@@ -21,6 +21,7 @@ import { authenticator } from "~/services/auth.server";
 import { useRef, useState } from "react";
 import {
   CalendarDaysIcon,
+  ClipboardDocumentIcon,
   CloudArrowDownIcon,
 } from "@heroicons/react/24/solid";
 
@@ -93,7 +94,29 @@ export default function Calendars() {
                   <Button
                     className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
                     onPress={async () => {
-                      let response = await fetch(`/export-ics/${calendar.id}`);
+                      let url = `http://calendar.iee.ihu.gr/export-ics/${calendar.uuid}`;
+
+                      // Δημιουργία ενός προσωρινού στοιχείου textarea για να αντιγράψουμε το URL
+                      let textarea = document.createElement("textarea");
+                      textarea.value = url;
+                      document.body.appendChild(textarea);
+                      textarea.select();
+                      document.execCommand("copy");
+                      document.body.removeChild(textarea);
+
+                      // Εμφάνιση μηνύματος επιβεβαίωσης στον χρήστη
+                      alert("Το URL αντιγράφηκε: " + url);
+                    }}
+                  >
+                    <ClipboardDocumentIcon className="h-4 w-4 text-gray-400" />
+                  </Button>
+
+                  <Button
+                    className="flex items-center gap-2 rounded-md bg-white/50 px-1 py-1 text-sm font-semibold text-zinc-900 shadow-sm hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-600"
+                    onPress={async () => {
+                      let response = await fetch(
+                        `/export-ics/${calendar.uuid}`,
+                      );
                       let blob = await response.blob();
                       let url = window.URL.createObjectURL(blob);
                       let a = document.createElement("a");

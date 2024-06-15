@@ -504,18 +504,21 @@ export default function Index() {
                             "block px-4 py-2 text-sm text-gray-700 active:bg-gray-100"
                           }
                           onAction={async () => {
-                            let response = await fetch("/export-ics");
-                            let blob = await response.blob();
-                            let url = window.URL.createObjectURL(blob);
-                            let a = document.createElement("a");
-                            a.href = url;
-                            a.download = "calendar.ics";
-                            document.body.appendChild(a);
-                            a.click();
-                            a.remove();
+                            let url = `http://calendar.iee.ihu.gr/export-ics/`;
+
+                            // Δημιουργία ενός προσωρινού στοιχείου textarea για να αντιγράψουμε το URL
+                            let textarea = document.createElement("textarea");
+                            textarea.value = url;
+                            document.body.appendChild(textarea);
+                            textarea.select();
+                            document.execCommand("copy");
+                            document.body.removeChild(textarea);
+
+                            // Εμφάνιση μηνύματος επιβεβαίωσης στον χρήστη
+                            alert("Το URL αντιγράφηκε: " + url);
                           }}
                         >
-                          Download Calendar
+                          Export Calendar
                         </MenuItem>
                         <MenuItem
                           className={

@@ -72,6 +72,7 @@ model CourseTeachers {
 
 model Calendars {
   id        Int    @id @default(autoincrement())
+  uuid      String @default(uuid())
   userId    String
   name      String
   courseIds String
